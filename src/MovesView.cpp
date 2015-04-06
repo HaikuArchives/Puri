@@ -400,7 +400,7 @@ MovesListView::_LoadImages(void)
 {
     for (int i = 0; i < 12; ++i) {
         delete fBM[i];
-        fBM[i] = LoadBitmap(fImageName[i], fIR.Width());
+        fBM[i] = Tools::LoadBitmap(fImageName[i], fIR.Width());
     }
 
 }

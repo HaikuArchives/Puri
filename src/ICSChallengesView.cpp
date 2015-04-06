@@ -164,7 +164,7 @@ ICSChallengesView::MessageReceived(BMessage* message)
             str.ReplaceAll("<s>", "");
             str.ReplaceAll("\r", "");
 
-            std::vector<BString> vec = Split(str, '\n');
+            std::vector<BString> vec = Tools::Split(str, '\n');
 
             for (uint i = 0; i < vec.size(); ++i)
                 AddSeek(vec[i]);

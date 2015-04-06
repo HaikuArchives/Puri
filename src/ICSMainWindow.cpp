@@ -290,7 +290,7 @@ ICSMainWindow::_ParseBlock(const char*& p1)
             case BLK_SET:
             {
                 std::vector<BString> vec;
-                vec = Split(str, '\t', "<s>", "");
+                vec = Tools::Split(str, '\t', "<s>", "");
                 if (vec.empty())
                     return true;
 
@@ -304,7 +304,7 @@ ICSMainWindow::_ParseBlock(const char*& p1)
             case BLK_UNSEEK:
             {
                 std::vector<BString> vec;
-                vec = Split(str, '\r', "<sr>", "\n");
+                vec = Tools::Split(str, '\r', "<sr>", "\n");
                 if (vec.empty())
                     return true;
 
@@ -349,7 +349,7 @@ ICSMainWindow::_ParseBlock(const char*& p1)
             case BLK_SEEK:
             {
                 std::vector<BString> vec;
-                vec = Split(str, '\r', "<sn>", "\n");
+                vec = Tools::Split(str, '\r', "<sn>", "\n");
                 if (vec.empty())
                     return true;
 
@@ -496,7 +496,7 @@ ICSMainWindow::_ParseSquareBracket(const char*& p)
     if (p == NULL)
         return false;
 
-    std::vector<BString> vec = Split(p, ' ', "[", "]");
+    std::vector<BString> vec = Tools::Split(p, ' ', "[", "]");
 
     if (vec.empty())
         return false;
@@ -516,7 +516,7 @@ ICSMainWindow::_ParseCurlyBracket(const char*& p)
 
     BString str(p);
     str.RemoveSet("()");
-    std::vector<BString> v = Split(str, ' ', "{", "}");
+    std::vector<BString> v = Tools::Split(str, ' ', "{", "}");
 
     if (v.empty())
         return false;

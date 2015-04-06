@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2011 Haiku Inc. All rights reserved.
+ * Copyright 2011-2012 Haiku Inc. All rights reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -29,10 +29,10 @@ public:
         fName(name),
         fLabel("")
     {
-        fLoadMessage = NULL;
-        fSaveMessage = NULL;
+        fLoadMessage = nullptr;
+        fSaveMessage = nullptr;
 
-        fAppName = GetAppName().Capitalize();
+        fAppName = Tools::AppName();
         fSettings = new BMessage();
         _Load(fSettings);
     }
@@ -75,11 +75,11 @@ public:
         if (f == static_cast<std::ostream& (*)(std::ostream&)>(std::endl)) {
             _Save();
             delete fSettings;
-            fSettings = NULL;
+            fSettings = nullptr;
             delete fLoadMessage;
-            fLoadMessage = NULL;
+            fLoadMessage = nullptr;
             delete fSaveMessage;
-            fSaveMessage = NULL;
+            fSaveMessage = nullptr;
         }
 
         return *this;
@@ -114,7 +114,7 @@ public:
         if (fLabel.Length() == 0) {
             return *this;
         } else {
-            if (fSaveMessage == NULL) {
+            if (fSaveMessage == nullptr) {
                 fSaveMessage = new BMessage();
                 fSettings->FindMessage(fName, 0, fSaveMessage);
             }
@@ -210,7 +210,7 @@ public:
         if (fLabel.Length() == 0)
             return *this;
 
-        if (fLoadMessage == NULL) {
+        if (fLoadMessage == nullptr) {
             fLoadMessage = new BMessage();
             fSettings->FindMessage(fName, 0, fLoadMessage);
         }
@@ -322,10 +322,10 @@ private:
 
     void _CheckSaveNull(void)
     {
-        if (fSettings == NULL) {
+        if (fSettings == nullptr) {
             fSettings = new BMessage();
             _Load(fSettings);
-        } else if (fSaveMessage == NULL) {
+        } else if (fSaveMessage == nullptr) {
             fSaveMessage = new BMessage();
             fSettings->FindMessage(fName, 0, fSaveMessage);
         }
@@ -333,10 +333,10 @@ private:
 
     void _CheckLoadNull(void)
     {
-        if (fSettings == NULL) {
+        if (fSettings == nullptr) {
             fSettings = new BMessage();
             _Load(fSettings);
-        } else if (fLoadMessage == NULL) {
+        } else if (fLoadMessage == nullptr) {
             fLoadMessage = new BMessage();
             fSettings->FindMessage(fName, 0, fLoadMessage);
         }

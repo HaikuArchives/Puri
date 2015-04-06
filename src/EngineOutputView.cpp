@@ -211,7 +211,7 @@ EngineOutputView::MessageReceived(BMessage* message)
 void
 EngineOutputView::_ParseEngineOutput(BString & str)
 {
-    vector<BString> v = Split(str, '\n');
+    vector<BString> v = Tools::Split(str, '\n');
 
     if (fRestString.Length() != 0) {
         v[0].Prepend(fRestString);
@@ -249,7 +249,7 @@ EngineOutputView::_ParseEngineOutput(BString & str)
         } else if (strncmp(p, "bestmove ", 9) == 0) {
             p += 9;
             fClearTextView = true;
-            vector<BString> v = Split(p);
+            vector<BString> v = Tools::Split(p);
             BMessage msg(MSG_ENGINEMOVE);
             msg.AddString("info", v[0]);
             Window()->PostMessage(&msg);
@@ -266,7 +266,7 @@ EngineOutputView::_ParseEngineOutput(BString & str)
 void
 EngineOutputView::_ParseDepth(const char*& p)
 {
-    vector<BString> v = Split(14, p);
+    vector<BString> v = Tools::Split(14, p);
 
     if (v[1] == "seldepth") {
         BString depth;
@@ -314,7 +314,7 @@ EngineOutputView::_ParseDepth(const char*& p)
 void
 EngineOutputView::_ParseCurrentMove(const char*& p)
 {
-    vector<BString> v = Split(p);
+    vector<BString> v = Tools::Split(p);
     BString move;
     move << v[2] << ". " << v[0];
     fCurrentMove->SetText(move);
@@ -324,7 +324,7 @@ EngineOutputView::_ParseCurrentMove(const char*& p)
 void
 EngineOutputView::_ParseNodes(const char*& p)
 {
-    vector<BString> v = Split(p);
+    vector<BString> v = Tools::Split(p);
     BString nps;
     nps << atoi(v[2]) / 1000 << " kN/s";
     fNPS->SetText(nps);

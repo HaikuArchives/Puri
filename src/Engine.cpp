@@ -36,7 +36,7 @@ Engine::Engine(BString name, uint32 replyCode, BLooper* targetLooper,
 	fTargetHandler = targetHandler;
 
 	fEngineName = name;
-	fEnginePath = GetAppPath().Append("/Engines/").Append( name );
+	fEnginePath = Tools::AppPath().Append("/Engines/").Append( name );
 
     !out << "ENGINE-PATH:   " << fEnginePath << std::endl;
 

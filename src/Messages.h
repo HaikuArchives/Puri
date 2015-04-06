@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2011 Haiku Inc. All rights reserved.
+ * Copyright 2011-2012 Haiku Inc. All rights reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -8,6 +8,9 @@
  */
 #ifndef MESSAGES_H
 #define MESSAGES_H
+
+#include <String.h>
+#include <Looper.h>
 
 enum{
         MSG_2D3DVIEW                = 'g201'    ,
@@ -106,5 +109,6 @@ enum{
 	};
 
 
+void	SendICS(BString str, BLooper* looper);
 
 #endif

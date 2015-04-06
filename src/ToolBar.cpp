@@ -75,7 +75,7 @@ ToolBar::AddButton(BString const& label, BString const& iconName, BMessage* msg)
 {
     fButton.push_back(label);
     fButtonIconName.push_back(iconName);
-    fButtonIcon.push_back(LoadBitmap(iconName, fIconWidth));
+    fButtonIcon.push_back(Tools::LoadBitmap(iconName, fIconWidth));
     fButtonMsg.push_back(msg);
     BRect rect = BRect(0, 0, StringWidth(label) + fButtonMargin.left +
         fButtonMargin.right, fFontHeight.ascent + 2 * fFontHeight.descent +

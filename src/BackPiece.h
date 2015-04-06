@@ -9,6 +9,8 @@
 #ifndef BACKPIECE_H
 #define BACKPIECE_H
 
+#include <String.h>
+
 const int White = 0;
 const int Black = 1;
 
@@ -42,5 +44,8 @@ const int B_B = Bishop | BlackFlag;
 const int R_B = Rook   | BlackFlag;
 const int Q_B = Queen  | BlackFlag;
 const int K_B = King   | BlackFlag;
+
+
+BString PieceToStr(int piece);
 
 #endif

@@ -57,7 +57,7 @@ ChessBoardView::ChessBoardView(BRect const& frame)
     fDefaultCursor  = new BCursor(B_CURSOR_ID_SYSTEM_DEFAULT);
     fGrabCursor     = new BCursor(B_CURSOR_ID_GRABBING);
 
-    fAppPath = GetAppPath().Append("/");
+    fAppPath = Tools::AppPath().Append("/");
 
     BString tempPath = fAppPath;
     tempPath<<"data/Sounds/Board/";
@@ -112,7 +112,7 @@ ChessBoardView::ChessBoardView(BRect const& frame)
     SetViewMode3D(fIs3D);
 
     fBoard2dBM = BTranslationUtils::GetBitmapFile(
-                   GetAppPath().Append("/data/Texture/Board/board_simple.png"));
+                   Tools::AppPath().Append("/data/Texture/Board/board_simple.png"));
     fBackgroundBM = NULL;
 }
 
@@ -123,7 +123,7 @@ ChessBoardView::_Load3DModels(void)
     if (f3DLoaded)
         return;
 
-    fBoardModel = new Model3DS(GetAppPath().Append(BOARD_PATH), true);
+    fBoardModel = new Model3DS(Tools::AppPath().Append(BOARD_PATH), true);
 	fBoardModel->EnableTexture(true);
 
     int mypieces[12]={K_W, Q_W, R_W, B_W, N_W, P_W, K_B, Q_B, R_B, B_B, N_B,
@@ -1168,11 +1168,11 @@ void
 ChessBoardView::_LoadImages(void)
 {
     delete fBoard2dBM;
-    fBoard2dBM = LoadBitmap("board", fIR.Width()*8);
+    fBoard2dBM = Tools::LoadBitmap("board", fIR.Width()*8);
 
     for (int i = 0; i < 12; ++i) {
         delete fBM[i];
-        fBM[i] = LoadBitmap(fImageName[i], fIR.Width());
+        fBM[i] = Tools::LoadBitmap(fImageName[i], fIR.Width());
     }
 }
 

@@ -73,7 +73,7 @@ Model3DS::Model3DS(BString const& filename, bool showTexture)
 
 	if (showTexture) {
 		fTextureIsOn = true;
-		fTexture = loadPNGTexture( GetAppPath().Append(
+		fTexture = loadPNGTexture(Tools::AppPath().Append(
                                "/data/Texture/Board/board.png" ).String() );
 	}
 }
@@ -104,51 +104,51 @@ Model3DS::GetPath(int const& kProperty)
 
 	switch (kProperty) {
 		case K_W:
-			path = GetAppPath().Append(KING_W_PATH);
+			path = Tools::AppPath().Append(KING_W_PATH);
 			break;
 
         case K_B:
-			path = GetAppPath().Append(KING_B_PATH);
+			path = Tools::AppPath().Append(KING_B_PATH);
 			break;
 
 		case Q_W:
-			path = GetAppPath().Append(QUEEN_W_PATH);
+			path = Tools::AppPath().Append(QUEEN_W_PATH);
 			break;
 
         case Q_B:
-			path = GetAppPath().Append(QUEEN_B_PATH);
+			path = Tools::AppPath().Append(QUEEN_B_PATH);
 			break;
 
 		case R_W:
-			path = GetAppPath().Append(ROOK_W_PATH);
+			path = Tools::AppPath().Append(ROOK_W_PATH);
 			break;
 
 		case R_B:
-			path = GetAppPath().Append(ROOK_B_PATH);
+			path = Tools::AppPath().Append(ROOK_B_PATH);
 			break;
 
 		case B_W:
-			path = GetAppPath().Append(BISHOP_W_PATH);
+			path = Tools::AppPath().Append(BISHOP_W_PATH);
 			break;
 
 		case B_B:
-			path = GetAppPath().Append(BISHOP_B_PATH);
+			path = Tools::AppPath().Append(BISHOP_B_PATH);
 			break;
 
 		case N_W:
-			path = GetAppPath().Append(KNIGHT_W_PATH);
+			path = Tools::AppPath().Append(KNIGHT_W_PATH);
 			break;
 
 		case N_B:
-			path = GetAppPath().Append(KNIGHT_B_PATH);
+			path = Tools::AppPath().Append(KNIGHT_B_PATH);
 			break;
 
 		case P_W:
-			path = GetAppPath().Append(PAWN_W_PATH);
+			path = Tools::AppPath().Append(PAWN_W_PATH);
 			break;
 
 		case P_B:
-			path = GetAppPath().Append(PAWN_B_PATH);
+			path = Tools::AppPath().Append(PAWN_B_PATH);
 			break;
 
 		default:

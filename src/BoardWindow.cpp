@@ -634,7 +634,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 		case MENU_HELP_HELP:
         {
             BString str = "file://";
-            str << GetAppPath() << "/data/Help/Help.html";
+            str << Tools::AppPath() << "/data/Help/Help.html";
             char const* args[] = {str.String(), 0};
             be_roster->Launch("text/html", 1, const_cast<char **>(args));
 			break;
@@ -677,19 +677,19 @@ void BoardWindow::MessageReceived(BMessage* message)
             BString str;
             message->FindString("info", &str);
             // The ics protocol is wrongly  implemented. it= , i=
-            vector<BString> timeW = Split(Find(str, "it="), ',');
-            vector<BString> timeB = Split(Find(str, "i="), ',');
+            vector<BString> timeW = Tools::Split(Tools::Find(str, "it="), ',');
+            vector<BString> timeB = Tools::Split(Tools::Find(str, "i="), ',');
             fTimeView->SetTimeWhite(atoi(timeW[0]));
             fTimeView->SetTimeBlack(atoi(timeB[0]));
             fTimeView->Stop();
 
-            vector<BString> elo = Split(Find(str, "rt=").RemoveSet("PE "), ',');
+            vector<BString> elo = Tools::Split(Tools::Find(str, "rt=").RemoveSet("PE "), ',');
             BString title;
             title << fPlayerName[0] << " (" << elo[0] << ")  -  ";
             title << fPlayerName[1] << " (" << elo[1] << ")    [ ";
             title << atoi(timeW[0]) / 60 << " +" << atoi(timeW[1]);
 
-            if (Find(str, "r=") == "1")
+            if (Tools::Find(str, "r=") == "1")
                 title << "  rated ]";
             else
                 title << "  unrated ]";
@@ -703,7 +703,7 @@ void BoardWindow::MessageReceived(BMessage* message)
         {
             BString move;
             message->FindString("info", &move);
-            std::vector<BString> vec = Split(move);
+            std::vector<BString> vec = Tools::Split(move);
             fTimeView->SetTimeMS(atoi(vec[5]), atoi(vec[1])%2 == 1);
             fChessBoard->DoICSMove(vec[3]);
             break;
