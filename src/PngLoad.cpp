@@ -23,9 +23,6 @@
  * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * gcc -Wall -ansi -L/usr/X11R6/lib -lGL -lGLU -lglut
- *    `libpng12-config --cflags --libs` png.c -o png
  */
 #include "PngLoad.h"
 

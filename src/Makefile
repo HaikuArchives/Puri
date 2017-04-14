@@ -129,7 +129,7 @@ DEFINES = DEBUG=0 VERSION=0.4
 
 #	Specify the warning level. Either NONE (suppress all warnings),
 #	ALL (enable all warnings), or leave blank (enable default warnings).
-WARNINGS =
+WARNINGS = ALL
 
 #	With image symbols, stack crawls in the debugger are meaningful.
 #	If set to "TRUE", symbols will be created.
@@ -140,7 +140,7 @@ SYMBOLS :=
 DEBUGGER :=
 
 #	Specify any additional compiler flags to be used.
-COMPILER_FLAGS = -std=c++0x -fpermissive  -Wfatal-errors -fmax-errors=1
+COMPILER_FLAGS = -std=c++0x
 
 #	Specify any additional linker flags to be used.
 LINKER_FLAGS =

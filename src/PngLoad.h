@@ -31,7 +31,7 @@
 #ifndef PNGLOAD_H
 #define PNGLOAD_H
 
-#include <GL/glut.h>
+#include <GL/gl.h>
 
 GLuint loadPNGTexture(const char *filename);
 
