@@ -14,7 +14,6 @@
 
 #include <IconUtils.h>
 #include <String.h>
-#include <GL/glut.h>
 #include <GL/glext.h>
 #include <TranslationKit.h>
 
@@ -29,7 +28,7 @@ using namespace std;
 ChessBoardView::ChessBoardView(BRect const& frame)
 	:
     BGLView(frame, "ChessBoardView", B_FOLLOW_ALL_SIDES, B_WILL_DRAW |
-                   B_NAVIGABLE, BGL_RGB |BGL_DOUBLE | BGL_DEPTH | BGL_ALPHA),
+		B_NAVIGABLE, BGL_RGB | BGL_DOUBLE | BGL_DEPTH | BGL_ALPHA),
     PI(3.14),
     fDragPiece2dBM(NULL),
     fBackgroundBM(NULL),
@@ -65,13 +64,13 @@ ChessBoardView::ChessBoardView(BRect const& frame)
 
     //BString sounds[6] = {"newgame.ogg", "move.ogg", "castle.ogg",
      //                                "capture.ogg", "illegal.ogg", "gong.ogg"};
-                                     
+
    	array<BString, 6> sounds = {{"newgame.ogg", "move.ogg", "castle.ogg",
-                                     "capture.ogg", "illegal.ogg", "gong.ogg"}};
+		"capture.ogg", "illegal.ogg", "gong.ogg"}};
 
     for (unsigned int i = 0; i < sounds.size(); ++i) {
         fSound.push_back( new BSimpleGameSound(
-                                        BString(tempPath).Append(sounds[i]) ) );
+			BString(tempPath).Append(sounds[i]) ) );
 
         if (fSound.back()->InitCheck() != B_OK)
             fPlaySound = false;
@@ -86,7 +85,7 @@ ChessBoardView::ChessBoardView(BRect const& frame)
     std::fill(&fBM[0], &fBM[12], static_cast< BBitmap* >(NULL));
     //TODO: Direct assignment should work, bug of gnu
     BString imageName[12] = {"wK", "wQ", "wR", "wB", "wN", "wP",
-                                           "bK", "bQ", "bR", "bB", "bN", "bP"};
+		"bK", "bQ", "bR", "bB", "bN", "bP"};
     std::copy(&imageName[0], &imageName[12], &fImageName[0]);
 
 	fWidth	= frame.right - frame.left;
@@ -112,7 +111,7 @@ ChessBoardView::ChessBoardView(BRect const& frame)
     SetViewMode3D(fIs3D);
 
     fBoard2dBM = BTranslationUtils::GetBitmapFile(
-                   Tools::AppPath().Append("/data/Texture/Board/board_simple.png"));
+		Tools::AppPath().Append("/data/Texture/Board/board_simple.png"));
     fBackgroundBM = NULL;
 }
 
@@ -127,7 +126,7 @@ ChessBoardView::_Load3DModels(void)
 	fBoardModel->EnableTexture(true);
 
     int mypieces[12]={K_W, Q_W, R_W, B_W, N_W, P_W, K_B, Q_B, R_B, B_B, N_B,
-                                                                           P_B};
+		P_B};
 
     for (int i = 0; i < 12; ++i)
         f3DPieces[i]= new Model3DS(mypieces[i]);
@@ -402,7 +401,6 @@ ChessBoardView::_Init(void)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_RESCALE_NORMAL);
-	glutInitDisplayMode(GLUT_DEPTH);
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
