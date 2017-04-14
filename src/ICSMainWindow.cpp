@@ -238,7 +238,7 @@ ICSMainWindow::_ParseBlock(const char*& p1)
     int ident = -1;
     int code  = -1;
     BString str;
-    char    temp[65356];
+    char temp[65356];
     const char* p2;
     !out << p1 << std::endl;
     for (int i = 0; (p2 = strchr(p1, BLOCK_SEPARATOR)) != NULL; ++i) {
@@ -265,7 +265,7 @@ ICSMainWindow::_ParseBlock(const char*& p1)
 
     if ((p2 = strchr(p1, BLOCK_END)) != NULL) {
           strncpy(str.LockBuffer(65356), p1, p2 - p1);
-          str[p2 - p1] = '\0';
+          str.SetByteAt(p2 - p1, '\0');
           str.UnlockBuffer();
           p1 = p2;
     } else {
@@ -638,7 +638,7 @@ ICSMainWindow::_LoadSettings(void)
     fSplitView1->SetItemWeight(0, value, true);
     if (value == 0)
     	fSplitView1->SetItemCollapsed(0, false);
-    	
+
     value = 5;
     settings << "Split11" >> value;
     fSplitView1->SetItemWeight(1, value, true);
@@ -650,7 +650,7 @@ ICSMainWindow::_LoadSettings(void)
     fSplitView2->SetItemWeight(0, value, true);
     if (value == 0)
     	fSplitView2->SetItemCollapsed(0, false);
-    	
+
     value = 1;
     settings << "Split21" >> value;
     fSplitView2->SetItemWeight(1, value, true);
@@ -662,7 +662,7 @@ ICSMainWindow::_LoadSettings(void)
     fSplitView3->SetItemWeight(0, value, true);
     if (value == 0)
     	fSplitView3->SetItemCollapsed(0, false);
-    	
+
     value = 1;
     settings << "Split31" >> value;
     fSplitView3->SetItemWeight(1, value, true);
@@ -674,7 +674,7 @@ ICSMainWindow::_LoadSettings(void)
     fSplitView4->SetItemWeight(0, value, true);
     if (value == 0)
     	fSplitView4->SetItemCollapsed(0, false);
-    	
+
     value = 1;
     settings << "Split41" >> value;
     fSplitView4->SetItemWeight(1, value, true);

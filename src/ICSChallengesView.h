@@ -18,7 +18,8 @@
 #include <TextView.h>
 #include <TextControl.h>
 
-#include "ColumnListView.h"
+#include <ColumnListView.h>
+
 #include "Debug.h"
 #include "ToolBar.h"
 
