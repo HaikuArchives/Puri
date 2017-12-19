@@ -1,3 +1,5 @@
+![Puri Screenshot](Screenshot.png "Puri")
+
 README
 
 you need gcc4 to compile it. That means, if you are using a hybrid perhaps you need to run the command "segcc gcc4" first.
