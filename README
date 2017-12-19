@@ -1,6 +1,6 @@
-![Puri Screenshot](Screenshot.png "Puri")
-
 README
+
+![Puri screenshot](Screenshot.png "Puri")
 
 you need gcc4 to compile it. That means, if you are using a hybrid perhaps you need to run the command "segcc gcc4" first.
 You can compile now the program by writing "jam" in the terminal from inside the source-directory.
