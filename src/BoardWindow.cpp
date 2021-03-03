@@ -1096,11 +1096,11 @@ BoardWindow::_SaveSettings(void)
 {
     Settings settings("BoardWindow");
     settings
-        << "Split10"        << fSplitView->ItemWeight(0L)
-        << "Split11"        << fSplitView->ItemWeight(1L)
-        << "Split20"        << fMaterialSV->ItemWeight(0L)
-        << "Split21"        << fMaterialSV->ItemWeight(1L)
-        << "Split22"        << fMaterialSV->ItemWeight(2L)
+        << "Split10"        << fSplitView->ItemWeight(0)
+        << "Split11"        << fSplitView->ItemWeight(1)
+        << "Split20"        << fMaterialSV->ItemWeight(0)
+        << "Split21"        << fMaterialSV->ItemWeight(1)
+        << "Split22"        << fMaterialSV->ItemWeight(2)
         << "EngineSkill"    << fSkillSlider->Value()
         << "EngineOff"      << (int32)fEngineOffMenuItem->IsMarked()
         << "3DView"         << (int32)f3DMI->IsMarked()

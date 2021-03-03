@@ -615,14 +615,14 @@ ICSMainWindow::_SaveSettings(void)
 {
     Settings settings("ics_wnd");
     settings
-        << "Split10" << (float)fSplitView1->ItemWeight(0L)
-        << "Split11" << (float)fSplitView1->ItemWeight(1L)
-        << "Split20" << (float)fSplitView2->ItemWeight(0L)
-        << "Split21" << (float)fSplitView2->ItemWeight(1L)
-        << "Split30" << (float)fSplitView3->ItemWeight(0L)
-        << "Split31" << (float)fSplitView3->ItemWeight(1L)
-        << "Split40" << (float)fSplitView4->ItemWeight(0L)
-        << "Split41" << (float)fSplitView4->ItemWeight(1L)
+        << "Split10" << (float)fSplitView1->ItemWeight(0)
+        << "Split11" << (float)fSplitView1->ItemWeight(1)
+        << "Split20" << (float)fSplitView2->ItemWeight(0)
+        << "Split21" << (float)fSplitView2->ItemWeight(1)
+        << "Split30" << (float)fSplitView3->ItemWeight(0)
+        << "Split31" << (float)fSplitView3->ItemWeight(1)
+        << "Split40" << (float)fSplitView4->ItemWeight(0)
+        << "Split41" << (float)fSplitView4->ItemWeight(1)
         << std::endl;
 }
 
