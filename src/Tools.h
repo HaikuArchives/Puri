@@ -274,11 +274,11 @@ public:
 		void* srcData = src->Bits();
 	
 		for (int32 y = 0; y <= height; y++) {
-			void* dstRow = (void*)((uint32)dstData + (uint32)(y * dstYOff));
-			void* srcRow = (void*)((uint32)srcData + ((uint32)(y * dy) * srcYOff));
+			void* dstRow = (void*)((addr_t)dstData + (uint32)(y * dstYOff));
+			void* srcRow = (void*)((addr_t)srcData + ((uint32)(y * dy) * srcYOff));
 	
 			for (int32 x = 0; x <= width; x++)
-				memcpy((void*)((uint32)dstRow + (x * bpp)), (void*)((uint32)srcRow
+				memcpy((void*)((addr_t)dstRow + (x * bpp)), (void*)((addr_t)srcRow
 	                                              + ((uint32)(x * dx) * bpp)), bpp);
 		}
 		
