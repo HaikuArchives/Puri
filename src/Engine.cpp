@@ -65,23 +65,28 @@ Engine::QuitRequested(void)
 void*
 Engine::_ReadThread(void* arg)
 {
-	ThreadData	data(*((ThreadData*)arg));
+	ThreadData*	data = (ThreadData*)arg;
 
-	char buf[BUF_SIZE];
+	char* buf = (char*)malloc(BUFSIZ);
 
 	int n;
 
 	for ( ; ; ) {
 		// read Engine Output, Get Pipes over  arg
-		n = read(data.outpipe, buf, BUF_SIZE);
+		n = read(data->outpipe, buf, BUFSIZ - 1);
+		if (n == -1)
+			continue;
   		buf[n] = 0;
 
         if (n > 0) {
-            BMessage msg(data.replyCode);
+            BMessage msg(data->replyCode);
             msg.AddString("info", buf);
-            data.target_looper->PostMessage(&msg, data.target_handler);
+            data->target_looper->PostMessage(&msg, data->target_handler);
         }
     }
+
+	free(buf);
+	delete data;
 
 	return NULL;
 }
@@ -135,8 +140,7 @@ Engine::_InitEngineCommunication(void)
 	data->target_handler = fTargetHandler;
 
 	// thread, for reading.the engineOutput
-	pthread_create(&fReadThread, NULL, _ReadThread,(void*)(data));
-    delete data;
+	pthread_create(&fReadThread, NULL, _ReadThread, data);
 }
 
 

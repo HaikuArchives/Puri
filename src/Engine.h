@@ -30,8 +30,6 @@ public:
 	void 	        Send(BString str);
 	bool        	IsRunning(void) {	return fIsRunning; }
 
-	enum {BUF_SIZE = 65356};
-
     enum {FIXEDDEPTH = 0, FIXEDTIME};
 
 private:
