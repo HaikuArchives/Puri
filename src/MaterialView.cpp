@@ -131,7 +131,7 @@ BasicMaterialView::FrameResized(float newWidth, float newHeight)
     float max = std::max( fWPieces.size(), fBPieces.size() );
     fMergedMode = false;
 
-    if (max < 3 || abs(fWPieces.size()-fBPieces.size()) < 2
+    if (max < 3 || abs((long int)(fWPieces.size()-fBPieces.size())) < 2
             || newHeight/2 < newWidth/max)
         fColumns = max;
     else {

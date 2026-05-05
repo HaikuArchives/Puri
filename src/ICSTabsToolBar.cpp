@@ -17,71 +17,71 @@
 
 ICSTabsToolBar::ICSTabsToolBar(void)
 	:
-    BGroupView("icstabstoolbar", B_HORIZONTAL, 0),
-    fAutohiding(false)
+	BGroupView("icstabstoolbar", B_HORIZONTAL, 0),
+	fAutohiding(false)
 {
-    // Home Tab
-    BGroupLayout* homeLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
-        .AddGlue(0)
+	// Home Tab
+	BGroupLayout* homeLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
+		.AddGlue(0)
 //        .Add(new ImageButton("star_green", NULL, 0.3))
-        .AddGlue(0)
-        .RootLayout()
-    ;
+		.AddGlue(0)
+		.RootLayout()
+	;
 
-    // Account Tab
-    BGroupLayout* accoutLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
-        .AddGlue(0)
+	// Account Tab
+	BGroupLayout* accoutLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
+		.AddGlue(0)
   //      .Add(new ImageButton("star_green", NULL, 0.3))
-        .AddGlue(0)
-        .RootLayout()
-    ;
+		.AddGlue(0)
+		.RootLayout()
+	;
 
-    // Home Tab
-    BGroupLayout* communityLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
-        .AddGlue(0)
-    //    .Add(new ImageButton("star_green", NULL, 0.3))
-        .AddGlue(0)
-        .RootLayout()
-    ;
+	// Home Tab
+	BGroupLayout* communityLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
+		.AddGlue(0)
+	//    .Add(new ImageButton("star_green", NULL, 0.3))
+		.AddGlue(0)
+		.RootLayout()
+	;
 
-    // Home Tab
-    BGroupLayout* viewLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
-        .AddGlue(0)
-     //   .Add(new ImageButton("star_green", NULL, 0.3))
-        .AddGlue(0)
-        .RootLayout()
-    ;
+	// Home Tab
+	BGroupLayout* viewLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
+		.AddGlue(0)
+	 //   .Add(new ImageButton("star_green", NULL, 0.3))
+		.AddGlue(0)
+		.RootLayout()
+	;
 
-    fTabView = new BTabView("tab_view");
-    fTabView->SetTabWidth(B_WIDTH_FROM_LABEL);
-    fTabsVec.push_back(new BTab());
+	fTabView = new BTabView("tab_view");
+	fTabView->SetTabWidth(B_WIDTH_FROM_LABEL);
+	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(homeLayout->View(), fTabsVec.back());
 	fTabsVec.back()->SetLabel("Home");
-    fTabsVec.push_back(new BTab());
+	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(accoutLayout->View(), fTabsVec.back());
 	fTabsVec.back()->SetLabel("Account");
-    fTabsVec.push_back(new BTab());
+	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(communityLayout->View(), fTabsVec.back());
 	fTabsVec.back()->SetLabel("Community");
-    fTabsVec.push_back(new BTab());
+	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(viewLayout->View(), fTabsVec.back());
 	fTabsVec.back()->SetLabel("View");
 
-    BLayoutBuilder::Group<>(this)
-        .Add(fTabView)
-    ;
+	BLayoutBuilder::Group<>(this)
+		.Add(fTabView)
+	;
 }
 
 
 void
 ICSTabsToolBar::AttachedToWindow(void)
 {
-   int size = fTabView->CountTabs();
+	int size = fTabView->CountTabs();
 
-   for (int i = 0; i < size; ++i)
-    fTabView->ViewForTab(i)->SetViewColor(220,220,255,255);
+	for (int i = 0; i < size; ++i)
+		fTabView->ViewForTab(i)->SetViewColor(220,220,255,255);
 
-    BGroupView::AttachedToWindow();
+	BGroupView::AttachedToWindow();
 }
 
 void

@@ -248,12 +248,12 @@ ImageButton::_RescaleBitmap(const BBitmap* src, int32 width, int32 height)
 	void* srcData = src->Bits();
 
 	for (int32 y = 0; y <= height; y++) {
-		void* dstRow = (void*)((uint32)dstData + (uint32)(y * dstYOff));
-		void* srcRow = (void*)((uint32)srcData + ((uint32)(y * dy) * srcYOff));
+		void* dstRow = (void*)((addr_t)dstData + (addr_t)(y * dstYOff));
+		void* srcRow = (void*)((addr_t)srcData + ((addr_t)(y * dy) * srcYOff));
 
 		for (int32 x = 0; x <= width; x++)
-			memcpy((void*)((uint32)dstRow + (x * bpp)), (void*)((uint32)srcRow
-                                              + ((uint32)(x * dx) * bpp)), bpp);
+			memcpy((void*)((addr_t)dstRow + (x * bpp)), (void*)((addr_t)srcRow
+                                              + ((addr_t)(x * dx) * bpp)), bpp);
 	}
 
 	return res;
