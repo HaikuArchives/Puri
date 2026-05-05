@@ -995,10 +995,6 @@ void
 ChessBoardView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case B_MOUSE_UP:
-			!out<<"BoardView: Mouse Down Message"<< std::endl;
-			break;
-
 		case ICS_MADE_MOVE:
 		{
 			BString move = "";
