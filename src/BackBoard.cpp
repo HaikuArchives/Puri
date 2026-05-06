@@ -14,18 +14,17 @@
 
 
 BackBoard::BackBoard(void)
-	:
-	fTurn(White),
-	fState(0),
-	fLastMoveStr("")
+	: fTurn(White),
+	  fState(0),
+	  fLastMoveStr("")
 {
 	!out << "BACKBOARD start" << std::endl;
 
-	Tuple<int>* Q_Inc  	= new Tuple<int>[9];
-	Tuple<int>* R_Inc  	= new Tuple<int>[5];
-	Tuple<int>* B_Inc  	= new Tuple<int>[5];
-	Tuple<int>* N_Inc 	= new Tuple<int>[9];
-	Tuple<int>* P_Inc	= new Tuple<int>[1];
+	Tuple<int>* Q_Inc = new Tuple<int>[9];
+	Tuple<int>* R_Inc = new Tuple<int>[5];
+	Tuple<int>* B_Inc = new Tuple<int>[5];
+	Tuple<int>* N_Inc = new Tuple<int>[9];
+	Tuple<int>* P_Inc = new Tuple<int>[1];
 
 	Q_Inc[0] = R_Inc[0] = Tuple<int>(1, 0);
 	Q_Inc[1] = R_Inc[1] = Tuple<int>(0, 1);
@@ -47,19 +46,19 @@ BackBoard::BackBoard(void)
 
 	Q_Inc[8] = R_Inc[4] = B_Inc[4] = N_Inc[8] = P_Inc[0] = 0;
 
-	fvInc[King  ] = fvInc[K_W] = fvInc[K_B] = Q_Inc;
-	fvInc[Queen ] = fvInc[Q_W] = fvInc[Q_B] = Q_Inc;
-	fvInc[Rook  ] = fvInc[R_W] = fvInc[R_B] = R_Inc;
+	fvInc[King] = fvInc[K_W] = fvInc[K_B] = Q_Inc;
+	fvInc[Queen] = fvInc[Q_W] = fvInc[Q_B] = Q_Inc;
+	fvInc[Rook] = fvInc[R_W] = fvInc[R_B] = R_Inc;
 	fvInc[Bishop] = fvInc[B_W] = fvInc[B_B] = B_Inc;
 	fvInc[Knight] = fvInc[N_W] = fvInc[N_B] = N_Inc;
-	fvInc[Pawn  ] = fvInc[P_W] = fvInc[P_B] = P_Inc;
+	fvInc[Pawn] = fvInc[P_W] = fvInc[P_B] = P_Inc;
 
 	NewGame();
 }
 
 
 void
-BackBoard::PrintMoves(std::list< Move > const& kMoves)
+BackBoard::PrintMoves(std::list<Move> const& kMoves)
 {
 	if (out.state() == false)
 		return;
@@ -71,7 +70,7 @@ BackBoard::PrintMoves(std::list< Move > const& kMoves)
 	for (int i = 0; itr != kMoves.end(); ++itr, ++i) {
 		out << "  " << i + 1 << ":  ";
 		out << itr->FromX() << "-" << itr->FromY() << "  ";
-		out << itr->ToX()   << "-" << itr->ToY()   << std::endl;
+		out << itr->ToX() << "-" << itr->ToY() << std::endl;
 	}
 
 	!out << "Moves - end" << std::endl;
@@ -83,7 +82,7 @@ BackBoard::_InitBoard(void)
 {
 	fTurn = White;
 
-	int vPiece[8] = {Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook};
+	int vPiece[8] = { Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook };
 
 	for (int i = 0; i < 12; ++i)
 		for (int j = 0; j < 12; ++j) {
@@ -124,21 +123,18 @@ void
 BackBoard::_DoMove(Move const& move)
 {
 	const int pieceFrom = _Board(move.From());
-	_Board(move.To())   = pieceFrom;
+	_Board(move.To()) = pieceFrom;
 	_Board(move.From()) = Empty;
 
 	if (_IsFlag(pieceFrom, Pawn)) {
 		if (pieceFrom == P_W) {
 			// add en passant
 			if (move.FromY() == 3 && move.ToY() == 5) {
-				if (_Board(move.FromX() - 1, 5 ) == P_B )
-					fPreMoves.push_back(Move(move.FromX() - 1, 5,
-														 move.FromX(), 4, ENP));
+				if (_Board(move.FromX() - 1, 5) == P_B)
+					fPreMoves.push_back(Move(move.FromX() - 1, 5, move.FromX(), 4, ENP));
 				if (_Board(move.FromX() + 1, 5) == P_B)
-					fPreMoves.push_back(Move(move.FromX() + 1, 5,
-														 move.FromX(), 4, ENP));
-			}
-			else if (move.HasFlag(PROM))
+					fPreMoves.push_back(Move(move.FromX() + 1, 5, move.FromX(), 4, ENP));
+			} else if (move.HasFlag(PROM))
 				_Board(move.To()) = move.Piece();
 			else if (move.HasFlag(ENP))
 				_Board(move.To() - Tuple<uint>(0, 1)) = Empty;
@@ -146,13 +142,10 @@ BackBoard::_DoMove(Move const& move)
 			// add en passant
 			if (move.FromY() == 8 && move.ToY() == 6) {
 				if (_Board(move.FromX() - 1, 6) == P_W)
-					fPreMoves.push_back(Move(move.FromX() - 1, 6,
-														move.FromX(), 7, ENP));
+					fPreMoves.push_back(Move(move.FromX() - 1, 6, move.FromX(), 7, ENP));
 				if (_Board(move.FromX() + 1, 6) == P_W)
-					fPreMoves.push_back(Move(move.FromX() + 1, 6,
-														move.FromX(), 7, ENP));
-			}
-			else if (move.HasFlag(PROM))
+					fPreMoves.push_back(Move(move.FromX() + 1, 6, move.FromX(), 7, ENP));
+			} else if (move.HasFlag(PROM))
 				_Board(move.To()) = move.Piece();
 			else if (move.HasFlag(ENP))
 				_Board(move.To() + Tuple<uint>(0, 1)) = Empty;
@@ -170,7 +163,7 @@ BackBoard::_DoMove(Move const& move)
 				_Board(5, 2) = R_W;
 			}
 		} else {
-			fPosK_B = move.To(); //update king position
+			fPosK_B = move.To();  // update king position
 
 			// If castle Move, put rooks on right position
 			if ((move.ToX() - move.FromX()) == 2) {
@@ -191,7 +184,7 @@ void
 BackBoard::DoMove(Move move)
 {
 	if (move < 2 || move > 9)
-		!out<<"ERROR->BackBoard::DoMove"<<std::endl;
+		!out << "ERROR->BackBoard::DoMove" << std::endl;
 
 	fLastMoveStr = _MoveToString(move);
 	_DoMove(move);
@@ -202,17 +195,22 @@ BackBoard::DoMove(Move move)
 	fPlayedMoves.push_back(move);
 	fCurrentMove++;
 
-	//ToDo: if flag -> promotion add sign.
-	// replace: switch state: check, mate, stale mate
+	// ToDo: if flag -> promotion add sign.
+	//  replace: switch state: check, mate, stale mate
 
 	fMoves = _GenMoves();
 
 	fState = State();
 
-	switch(fState) {
-		case 1: fLastMoveStr += "+";    break;
-		case 2: fLastMoveStr += "#";    break;
-		default:                        break;
+	switch (fState) {
+		case 1:
+			fLastMoveStr += "+";
+			break;
+		case 2:
+			fLastMoveStr += "#";
+			break;
+		default:
+			break;
 	}
 }
 
@@ -221,8 +219,10 @@ int
 BackBoard::State(void)
 {
 	if (_IsCheck()) {
-		if (fMoves.empty())     return 2;
-		else                    return 1;
+		if (fMoves.empty())
+			return 2;
+		else
+			return 1;
 	} else if (fMoves.empty())
 		return 3;
 
@@ -250,7 +250,7 @@ BackBoard::Promote(int value)
 bool
 BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 {
-	Tuple<uint> * kingPos = NULL;
+	Tuple<uint>* kingPos = NULL;
 	bool isKing = false;
 
 	// if the king makes the pseudo-move, change also the king-coordinates,
@@ -261,7 +261,7 @@ BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 				return false;
 
 			kingPos = &fPosK_W;
-		} else	if (_Board(kFrom) == K_B) {
+		} else if (_Board(kFrom) == K_B) {
 			if ((kTo - fPosK_W) < 2)
 				return false;
 
@@ -269,14 +269,14 @@ BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 		}
 
 		*kingPos = kTo;
-		isKing 	 = true;
+		isKing = true;
 	}
 
 	const int kPiece = _Board(kTo);
 
 	// Do  a pseudo-move , check if King is attackend
 	// then undo the move
-	_Board(kTo)   = _Board(kFrom);
+	_Board(kTo) = _Board(kFrom);
 	_Board(kFrom) = Empty;
 
 	if (_IsCheck()) {
@@ -284,7 +284,7 @@ BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 			*kingPos = kFrom;
 
 		_Board(kFrom) = _Board(kTo);
-		_Board(kTo)   = kPiece;
+		_Board(kTo) = kPiece;
 
 		return false;
 	} else {
@@ -292,7 +292,7 @@ BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 			*kingPos = kFrom;
 
 		_Board(kFrom) = _Board(kTo);
-		_Board(kTo)   = kPiece;
+		_Board(kTo) = kPiece;
 
 		return true;
 	}
@@ -302,19 +302,21 @@ BackBoard::_IsLegal(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 bool
 BackBoard::_IsCheck(void)
 {
-	Tuple<uint>  from, to;
+	Tuple<uint> from, to;
 
-	if (fTurn == White)     from = fPosK_W;
-	else					from = fPosK_B;
+	if (fTurn == White)
+		from = fPosK_W;
+	else
+		from = fPosK_B;
 
 	Tuple<int> inc;
 
 	// check if the King is attacked by a Queen, Rook or Bishop
-	for (int i = 0; (inc = fvInc[ Queen ][i]) != 0 ; ++i) {
-		to	= from;
+	for (int i = 0; (inc = fvInc[Queen][i]) != 0; ++i) {
+		to = from;
 
-		for ( ; ; ) {
-			to += inc ;
+		for (;;) {
+			to += inc;
 
 			if (_Board(to) == Empty)
 				continue;
@@ -325,7 +327,7 @@ BackBoard::_IsCheck(void)
 					if (_IsFlag(_Board(to), Rook))
 						return true;
 				} else if (_IsFlag(_Board(to), Bishop))
-						return true;
+					return true;
 			}
 
 			break;
@@ -333,7 +335,7 @@ BackBoard::_IsCheck(void)
 	}
 
 	// check if the King is attacked by a Knight
-	for (int i = 0; (inc = fvInc[ Knight ][i]) != 0; ++i) {
+	for (int i = 0; (inc = fvInc[Knight][i]) != 0; ++i) {
 		if (_IsFlag(_Board(from + inc), Knight))
 			if (_IsCapture(_Board(from + inc)))
 				return true;
@@ -360,94 +362,119 @@ BackBoard::_IsCheck(void)
 std::list<Move>
 BackBoard::_GenMoves(void)
 {
-	std::list< Move > moves = fPreMoves;
-		// add preliminar moves, like en passant
+	std::list<Move> moves = fPreMoves;
+	// add preliminar moves, like en passant
 
 	fPreMoves.clear();
 
-	Tuple<uint>     from, to;
-	int             piece;
+	Tuple<uint> from, to;
+	int piece;
 
 	for (from.y = 2; from.y < 10; ++from.y)
-	for (from.x = 2; from.x < 10; ++from.x) {
-		piece = _Board( from );
+		for (from.x = 2; from.x < 10; ++from.x) {
+			piece = _Board(from);
 
-		if (piece == Empty || piece == Edge || _IsCapture(piece))
-			continue;
+			if (piece == Empty || piece == Edge || _IsCapture(piece))
+				continue;
 
-		// add pawn-moves
-		if (piece == P_B) {
-			to = from + Tuple<int>(-1, -1);
+			// add pawn-moves
+			if (piece == P_B) {
+				to = from + Tuple<int>(-1, -1);
 
-			if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
-				if (to.y == 2)      moves.push_back(Move(from, to, PROM|P_B));
-				else                moves.push_back(Move(from, to));
+				if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
+					if (to.y == 2)
+						moves.push_back(Move(from, to, PROM | P_B));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				to = from + Tuple<int>(1, -1);
+
+				if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
+					if (to.y == 2)
+						moves.push_back(Move(from, to, PROM | P_B));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				to = from + Tuple<int>(0, -1);
+
+				if (_Board(to) == Empty && _IsLegal(from, to)) {
+					if (to.y == 2)
+						moves.push_back(Move(from, to, PROM | P_B));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				if (from.y == 8 && _Board(to) == Empty) {
+					to = from + Tuple<int>(0, -2);
+
+					if (_Board(to) == Empty && _IsLegal(from, to))
+						moves.push_back(Move(from, to));
+				}
+
+				continue;
+			} else if (piece == P_W) {
+				to = from + Tuple<int>(-1, 1);
+
+				if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
+					if (to.y == 9)
+						moves.push_back(Move(from, to, PROM | P_W));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				to = from + Tuple<int>(1, 1);
+
+				if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
+					if (to.y == 9)
+						moves.push_back(Move(from, to, PROM | P_W));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				to = from + Tuple<int>(0, 1);
+
+				if (_Board(to) == Empty && _IsLegal(from, to)) {
+					if (to.y == 9)
+						moves.push_back(Move(from, to, PROM | P_W));
+					else
+						moves.push_back(Move(from, to));
+				}
+
+				if (from.y == 3 && _Board(to) == Empty) {
+					to = from + Tuple<int>(0, 2);
+
+					if (_Board(to) == Empty && _IsLegal(from, to))
+						moves.push_back(Move(from, to));
+				}
+
+				continue;
 			}
 
-			to = from + Tuple<int>(1, -1);
 
-			if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
-				if (to.y == 2)      moves.push_back(Move(from, to, PROM|P_B));
-				else                moves.push_back(Move(from, to));
-			}
+			// add moves of King, Quee, Rook, Bishop, Knight
+			Tuple<int> inc;
 
-			to = from + Tuple<int>( 0, -1 );
+			for (int i = 0; (inc = fvInc[piece][i]) != 0; ++i) {
+				if (_IsSlider(piece)) {
+					to = from;
 
-			if (_Board(to) == Empty && _IsLegal(from, to)) {
-				if (to.y == 2)   	moves.push_back(Move(from, to, PROM|P_B));
-				else                moves.push_back(Move(from, to));
-			}
+					for (;;) {
+						to += inc;
 
-			if (from.y == 8 && _Board(to) == Empty) {
-				to = from + Tuple<int>(0, -2);
-
-				if (_Board( to ) == Empty && _IsLegal(from, to))
-					moves.push_back(Move(from, to));
-			}
-
-			continue;
-		} else if (piece == P_W) {
-			to = from + Tuple<int>(-1, 1);
-
-			if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
-				if (to.y == 9) 		moves.push_back(Move(from, to, PROM|P_W));
-				else                moves.push_back(Move(from, to));
-			}
-
-			to = from + Tuple<int>(1, 1);
-
-			if (_IsCapture(_Board(to)) && _IsLegal(from, to)) {
-				if (to.y == 9)   	moves.push_back(Move(from, to, PROM|P_W));
-				else                moves.push_back(Move(from, to));
-			}
-
-			to = from + Tuple<int>(0, 1);
-
-			if (_Board(to) == Empty && _IsLegal(from, to)) {
-				if (to.y == 9)   	moves.push_back(Move(from, to, PROM|P_W));
-				else                moves.push_back(Move(from, to));
-			}
-
-			if (from.y == 3 && _Board(to) == Empty) {
-				to = from + Tuple<int>(0, 2);
-
-				if (_Board(to) == Empty && _IsLegal(from, to))
-					moves.push_back(Move(from, to));
-			}
-
-			continue;
-		}
-
-
-		// add moves of King, Quee, Rook, Bishop, Knight
-		Tuple<int> inc;
-
-		for (int i = 0; (inc = fvInc[ piece ][i]) != 0; ++i) {
-			if (_IsSlider(piece)) {
-				to = from;
-
-				for ( ;; ) {
-					to += inc ;
+						if (_Board(to) == Empty) {
+							if (_IsLegal(from, to))
+								moves.push_back(Move(from, to));
+						} else if (_IsCapture(_Board(to))) {
+							if (_IsLegal(from, to))
+								moves.push_back(Move(from, to));
+							break;
+						} else
+							break;
+					}
+				} else {
+					to = from + inc;
 
 					if (_Board(to) == Empty) {
 						if (_IsLegal(from, to))
@@ -455,26 +482,10 @@ BackBoard::_GenMoves(void)
 					} else if (_IsCapture(_Board(to))) {
 						if (_IsLegal(from, to))
 							moves.push_back(Move(from, to));
-						break;
-					} else
-						break;
-				}
-			}
-			else {
-				to = from + inc;
-
-				if (_Board(to) == Empty) {
-					if (_IsLegal(from, to))
-						moves.push_back(Move(from, to));
-				}
-				else if (_IsCapture(_Board(to))) {
-					if (_IsLegal(from, to))
-						moves.push_back(Move(from, to));
+					}
 				}
 			}
 		}
-
-	}
 
 	// AddCastleMoves( moves );
 	if (_IsCheck() == false) {
@@ -483,7 +494,7 @@ BackBoard::_GenMoves(void)
 				if (_FindMove(fPosK_W, fPosK_W.AddX(1), moves))
 					moves.push_back(Move(fPosK_W, fPosK_W.AddX(2), CASTLE));
 
-			if (_FindMove(Tuple<uint>( 2, 2 ), fPosK_W.SubX(1), moves))
+			if (_FindMove(Tuple<uint>(2, 2), fPosK_W.SubX(1), moves))
 				if (_FindMove(fPosK_W, fPosK_W.SubX(1), moves))
 					moves.push_back(Move(fPosK_W, fPosK_W.SubX(2), CASTLE));
 		} else {
@@ -524,12 +535,12 @@ BackBoard::Print(void)
 
 	!out;
 	for (unsigned int i = 2; i < 10; ++i)
-	for (unsigned int j = 2; j < 10; ++j) {
-		out << _Board( j, 11 - i ) << " ";
+		for (unsigned int j = 2; j < 10; ++j) {
+			out << _Board(j, 11 - i) << " ";
 
-		if (j == 9)
-			out << std::endl;
-	}
+			if (j == 9)
+				out << std::endl;
+		}
 }
 
 
@@ -591,25 +602,44 @@ BackBoard::_MoveToString(Move const& move)
 {
 	BString moveStr;
 	Tuple<uint> from = move.From();
-	Tuple<uint> to   = move.To();
+	Tuple<uint> to = move.To();
 
 	int piece = _Board(from);
 
 	switch (piece) {
-		case K_W: case K_B:
+		case K_W:
+		case K_B:
 			if (from.x == 6) {
-				if      (to.x == 8) { moveStr = "0-0"  ; return(moveStr); }
-				else if (to.x == 4) { moveStr = "0-0-0"; return(moveStr); }
+				if (to.x == 8) {
+					moveStr = "0-0";
+					return (moveStr);
+				} else if (to.x == 4) {
+					moveStr = "0-0-0";
+					return (moveStr);
+				}
 			}
 
 			moveStr = "K";
 			break;
 
-		case Q_W: case Q_B:     moveStr = "Q"; break;
-		case R_W: case R_B:     moveStr = "R"; break;
-		case B_W: case B_B:     moveStr = "B"; break;
-		case N_W: case N_B:     moveStr = "N"; break;
-		case P_W: case P_B:
+		case Q_W:
+		case Q_B:
+			moveStr = "Q";
+			break;
+		case R_W:
+		case R_B:
+			moveStr = "R";
+			break;
+		case B_W:
+		case B_B:
+			moveStr = "B";
+			break;
+		case N_W:
+		case N_B:
+			moveStr = "N";
+			break;
+		case P_W:
+		case P_B:
 			moveStr = "P";
 			if (move.HasFlag(ENP))
 				moveStr += "x";
@@ -630,21 +660,24 @@ BackBoard::_MoveToString(Move const& move)
 	for (; itr != fMoves.end(); ++itr) {
 		temp = itr->From();
 
-		if (itr->To() == to && temp!=from && _Board(from)  == _Board(temp)) {
-			if (temp.x == from.x)     sameX = true;
-			else                      sameY = true;
+		if (itr->To() == to && temp != from && _Board(from) == _Board(temp)) {
+			if (temp.x == from.x)
+				sameX = true;
+			else
+				sameY = true;
 		}
-
 	}
 
-	if (sameY)                  moveStr += ('a' + from.x - 2);
-	if (sameX)                  moveStr += ('1' + from.y - 2);
-	if (_Board(to) != Empty)    moveStr += "x";
+	if (sameY)
+		moveStr += ('a' + from.x - 2);
+	if (sameX)
+		moveStr += ('1' + from.y - 2);
+	if (_Board(to) != Empty)
+		moveStr += "x";
 
 	moveStr += ('a' + to.x - 2);
 
-	if ((_Board(to) == Empty && move.HasFlag(ENP) == false)
-		|| _IsFlag(piece, Pawn) == false)
+	if ((_Board(to) == Empty && move.HasFlag(ENP) == false) || _IsFlag(piece, Pawn) == false)
 		moveStr += ('1' + to.y - 2);
 
 	if (move.HasFlag(PROM))
@@ -672,13 +705,33 @@ BackBoard::_ToPiece(char character)
 	int piece = Empty;
 
 	switch (character) {
-		case 'K': case 'k':     piece = King;   break;
-		case 'Q': case 'q':     piece = Queen;  break;
-		case 'R': case 'r':     piece = Rook;   break;
-		case 'B': case 'b':     piece = Bishop; break;
-		case 'N': case 'n':     piece = Knight; break;
-		case 'P': case 'p':     piece = Pawn;   break;
-		default:                piece = Empty;  break;
+		case 'K':
+		case 'k':
+			piece = King;
+			break;
+		case 'Q':
+		case 'q':
+			piece = Queen;
+			break;
+		case 'R':
+		case 'r':
+			piece = Rook;
+			break;
+		case 'B':
+		case 'b':
+			piece = Bishop;
+			break;
+		case 'N':
+		case 'n':
+			piece = Knight;
+			break;
+		case 'P':
+		case 'p':
+			piece = Pawn;
+			break;
+		default:
+			piece = Empty;
+			break;
 	}
 
 	if (fTurn == White)
@@ -693,29 +746,55 @@ BackBoard::GetMaterial(void)
 {
 	BString material;
 
-	int     piece[5]  = {0, 0, 0, 0, 0};
-	char    wpiece[5] = {'Q', 'R', 'B', 'N', 'P'};
-	char    bpiece[5] = {'q', 'r', 'b', 'n', 'p'};
+	int piece[5] = { 0, 0, 0, 0, 0 };
+	char wpiece[5] = { 'Q', 'R', 'B', 'N', 'P' };
+	char bpiece[5] = { 'q', 'r', 'b', 'n', 'p' };
 
 	for (uint i = 2; i < 10; ++i)
-	for (uint j = 2; j < 10; ++j) {
-		switch(_Board(i, j)) {
-			case Q_W: ++piece[0]; break; case Q_B: --piece[0]; break;
-			case R_W: ++piece[1]; break; case R_B: --piece[1]; break;
-			case B_W: ++piece[2]; break; case B_B: --piece[2]; break;
-			case N_W: ++piece[3]; break; case N_B: --piece[3]; break;
-			case P_W: ++piece[4]; break; case P_B: --piece[4]; break;
-			default:    break;
+		for (uint j = 2; j < 10; ++j) {
+			switch (_Board(i, j)) {
+				case Q_W:
+					++piece[0];
+					break;
+				case Q_B:
+					--piece[0];
+					break;
+				case R_W:
+					++piece[1];
+					break;
+				case R_B:
+					--piece[1];
+					break;
+				case B_W:
+					++piece[2];
+					break;
+				case B_B:
+					--piece[2];
+					break;
+				case N_W:
+					++piece[3];
+					break;
+				case N_B:
+					--piece[3];
+					break;
+				case P_W:
+					++piece[4];
+					break;
+				case P_B:
+					--piece[4];
+					break;
+				default:
+					break;
+			}
 		}
-	}
 
 	for (uint i = 0; i < 5; ++i) {
 		if (piece[i] > 0)
 			for (int j = 0; j < piece[i]; ++j)
-				material <<  (char)wpiece[i];
+				material << (char)wpiece[i];
 		else
 			for (int j = 0; j < -piece[i]; ++j)
-				material <<  (char) bpiece[i];
+				material << (char)bpiece[i];
 	}
 
 	return material;

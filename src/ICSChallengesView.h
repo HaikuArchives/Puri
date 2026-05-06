@@ -15,63 +15,59 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include <ColumnListView.h>
 
 #include "Debug.h"
 #include "ToolBar.h"
 
-class ChallengesCLV : public BColumnListView
-{
+class ChallengesCLV : public BColumnListView {
 public:
-                    ChallengesCLV(void);
+	ChallengesCLV(void);
 
-    virtual	void    ItemInvoked();
+	virtual void ItemInvoked();
 
 private:
-
-    Debug           out;
+	Debug out;
 };
 
 
-class ICSChallengesView : public BGroupView
-{
+class ICSChallengesView : public BGroupView {
 public:
-                    ICSChallengesView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
-    virtual void    Pulse(void);
-            void    AddSeek(BString const& str);
-            void    RemoveSeek(int index);
+	ICSChallengesView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
+	virtual void Pulse(void);
+	void AddSeek(BString const& str);
+	void RemoveSeek(int index);
 
-            void    SetSeeking(bool seeking = true)
-            {
-                fIsSeeking = seeking;
-            }
+	void SetSeeking(bool seeking = true) { fIsSeeking = seeking; }
 
-            bool    IsSeeking(void)
-            {
-                return fIsSeeking;
-            }
+	bool IsSeeking(void) { return fIsSeeking; }
 
-    enum{ M_ACCEPT = 'iab1', M_DELETE = 'idb1', M_MODIFY = 'imb1',
-          M_SEEK = 'isb1', M_FORMULA = 'ifb1'};
+	enum {
+		M_ACCEPT = 'iab1',
+		M_DELETE = 'idb1',
+		M_MODIFY = 'imb1',
+		M_SEEK = 'isb1',
+		M_FORMULA = 'ifb1'
+	};
 
 private:
-    ChallengesCLV*      fColumnList;
-    ToolBar*            fToolBar;
+	ChallengesCLV* fColumnList;
+	ToolBar* fToolBar;
 
-    int                 fPulseRate;
-    int                 fPulses;
+	int fPulseRate;
+	int fPulses;
 
-    bool                fIsSeeking;
+	bool fIsSeeking;
 
-    BLocker             fLocker;
+	BLocker fLocker;
 
-    Debug               out;
+	Debug out;
 };
 
 
-#endif // ICSCHALLENGESVIEW_H
+#endif	// ICSCHALLENGESVIEW_H

@@ -14,33 +14,30 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "ColumnListView.h"
 #include "Debug.h"
 
-class ChannelsListView : public BColumnListView
-{
+class ChannelsListView : public BColumnListView {
 public:
-                    ChannelsListView(void);
+	ChannelsListView(void);
 
 private:
-
 };
 
-class ICSChannelsView : public BGroupView
-{
+class ICSChannelsView : public BGroupView {
 public:
-                    ICSChannelsView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSChannelsView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
 private:
-    ChannelsListView*   fListView;
+	ChannelsListView* fListView;
 
-    Debug               out;
+	Debug out;
 };
 
 
-#endif // ICSCHANNELSVIEW_H
+#endif	// ICSCHANNELSVIEW_H

@@ -12,22 +12,17 @@
 #include <GroupView.h>
 #include <ListView.h>
 
-class NavigationView : public BGroupView
-{
+class NavigationView : public BGroupView {
 public:
-                    NavigationView(void);
-    virtual void    MouseMoved(BPoint where, uint32 code,
-                                const BMessage* dragMessage);
-    virtual	void	MakeFocus(bool focusState = true);
-            void	SetAutohiding(bool autohiding = true);
-            bool	IsAutohiding(void)
-            {
-                return fAutohiding;
-            }
+	NavigationView(void);
+	virtual void MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage);
+	virtual void MakeFocus(bool focusState = true);
+	void SetAutohiding(bool autohiding = true);
+	bool IsAutohiding(void) { return fAutohiding; }
 
 private:
-    BGroupLayout*	    fMainGroup;
-    bool				fAutohiding;
+	BGroupLayout* fMainGroup;
+	bool fAutohiding;
 };
 
 #endif

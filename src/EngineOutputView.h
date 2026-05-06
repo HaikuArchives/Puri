@@ -9,8 +9,8 @@
 #ifndef ENGINEOUTPUTVIEW_H
 #define ENGINEOUTPUTVIEW_H
 
-#include <Button.h>
 #include <Box.h>
+#include <Button.h>
 #include <GroupView.h>
 #include <Locker.h>
 #include <Message.h>
@@ -24,52 +24,48 @@
 #include "Debug.h"
 
 
-class EngineOutputView : public BGroupView
-{
+class EngineOutputView : public BGroupView {
 public:
-                    EngineOutputView(BackBoard * board);
-    virtual void    AllAttached(void);
-    virtual void    MessageReceived(BMessage* message);
+	EngineOutputView(BackBoard* board);
+	virtual void AllAttached(void);
+	virtual void MessageReceived(BMessage* message);
 
-            void    AddText(BString str);
-            void    SetOn(bool on = true)
-            {
-                fBlinker->SetOn(on);
-            }
+	void AddText(BString str);
+	void SetOn(bool on = true) { fBlinker->SetOn(on); }
 
 private:
-            void    _ParseEngineOutput(BString & str);
-            void    _ParseDepth(const char*& p);
-            void    _ParseCurrentMove(const char*& p);
-            void    _ParseNodes(const char*& p);
+	void _ParseEngineOutput(BString& str);
+	void _ParseDepth(const char*& p);
+	void _ParseCurrentMove(const char*& p);
+	void _ParseNodes(const char*& p);
 
-    BBox*           fEngineNameBox;
-    BBox*           fBlinkerBox;
-    BBox*           fEvaluationBox;
-    BBox*           fDepthBox;
-    BBox*           fCurrentMoveBox;
-    BBox*           fNPSBox;
-    BBox*           fTextBox;
+	BBox* fEngineNameBox;
+	BBox* fBlinkerBox;
+	BBox* fEvaluationBox;
+	BBox* fDepthBox;
+	BBox* fCurrentMoveBox;
+	BBox* fNPSBox;
+	BBox* fTextBox;
 
-    BStringView*    fEngineName;
-    BStringView*    fEvaluation;
-    BStringView*    fDepth;
-    BStringView*    fCurrentMove;
-    BStringView*    fNPS;
+	BStringView* fEngineName;
+	BStringView* fEvaluation;
+	BStringView* fDepth;
+	BStringView* fCurrentMove;
+	BStringView* fNPS;
 
-    BTextView*      fTextView;
-    BScrollBar*     fVScrollBar;
-    BScrollBar*     fHScrollBar;
-    BButton*        fGoButton;
-    BlinkerView*    fBlinker;
+	BTextView* fTextView;
+	BScrollBar* fVScrollBar;
+	BScrollBar* fHScrollBar;
+	BButton* fGoButton;
+	BlinkerView* fBlinker;
 
-    BackBoard*      fBoard;
-    BLocker         fLocker;
-    BString         fRestString;
+	BackBoard* fBoard;
+	BLocker fLocker;
+	BString fRestString;
 
-    bool            fClearTextView;
-    Debug           out;
+	bool fClearTextView;
+	Debug out;
 };
 
 
-#endif // ENGINEOUTPUTVIEW_H
+#endif	// ENGINEOUTPUTVIEW_H

@@ -9,32 +9,36 @@
 #ifndef INTROWINDOW_H
 #define INTROWINDOW_H
 
-#include <GroupLayout.h>
 #include <CardLayout.h>
 #include <CheckBox.h>
+#include <GroupLayout.h>
 #include <TextControl.h>
 #include <Window.h>
 
 #include "Debug.h"
 
-class IntroWindow : public BWindow
-{
+class IntroWindow : public BWindow {
 public:
-                        IntroWindow(void);
-    virtual void        MessageReceived(BMessage* message);
-	enum{M_ONLINE = 'iob1', M_EXIT = 'ixb1', M_OFFLINE = 'iob2'};
+	IntroWindow(void);
+	virtual void MessageReceived(BMessage* message);
+	enum {
+		M_ONLINE = 'iob1',
+		M_EXIT = 'ixb1',
+		M_OFFLINE = 'iob2'
+	};
+
 private:
-    BCardLayout*            fCardLayout;
-    BGroupLayout*           fLoginLayout;
+	BCardLayout* fCardLayout;
+	BGroupLayout* fLoginLayout;
 
-    BTextControl*           fServerTC;
-    BTextControl*           fPortTC;
-    BTextControl*           fUsernameTC;
-    BTextControl*           fPasswordTC;
+	BTextControl* fServerTC;
+	BTextControl* fPortTC;
+	BTextControl* fUsernameTC;
+	BTextControl* fPasswordTC;
 
-    BCheckBox*              fRemember;
+	BCheckBox* fRemember;
 
-    Debug                   out;
+	Debug out;
 };
 
 

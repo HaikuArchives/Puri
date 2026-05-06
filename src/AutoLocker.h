@@ -12,99 +12,71 @@
 namespace BPrivate {
 
 // AutoLockerStandardLocking
-template<typename Lockable>
+template <typename Lockable>
 class AutoLockerStandardLocking {
 public:
-	inline bool Lock(Lockable* lockable)
-	{
-		return lockable->Lock();
-	}
+	inline bool Lock(Lockable* lockable) { return lockable->Lock(); }
 
-	inline void Unlock(Lockable* lockable)
-	{
-		lockable->Unlock();
-	}
+	inline void Unlock(Lockable* lockable) { lockable->Unlock(); }
 };
 
 // AutoLockerReadLocking
-template<typename Lockable>
+template <typename Lockable>
 class AutoLockerReadLocking {
 public:
-	inline bool Lock(Lockable* lockable)
-	{
-		return lockable->ReadLock();
-	}
+	inline bool Lock(Lockable* lockable) { return lockable->ReadLock(); }
 
-	inline void Unlock(Lockable* lockable)
-	{
-		lockable->ReadUnlock();
-	}
+	inline void Unlock(Lockable* lockable) { lockable->ReadUnlock(); }
 };
 
 // AutoLockerWriteLocking
-template<typename Lockable>
+template <typename Lockable>
 class AutoLockerWriteLocking {
 public:
-	inline bool Lock(Lockable* lockable)
-	{
-		return lockable->WriteLock();
-	}
+	inline bool Lock(Lockable* lockable) { return lockable->WriteLock(); }
 
-	inline void Unlock(Lockable* lockable)
-	{
-		lockable->WriteUnlock();
-	}
+	inline void Unlock(Lockable* lockable) { lockable->WriteUnlock(); }
 };
 
 // AutoLocker
-template<typename Lockable,
-		 typename Locking = AutoLockerStandardLocking<Lockable> >
+template <typename Lockable, typename Locking = AutoLockerStandardLocking<Lockable> >
 class AutoLocker {
 private:
-	typedef AutoLocker<Lockable, Locking>	ThisClass;
+	typedef AutoLocker<Lockable, Locking> ThisClass;
+
 public:
 	inline AutoLocker()
-		:
-		fLockable(NULL),
-		fLocked(false)
+		: fLockable(NULL),
+		  fLocked(false)
 	{
 	}
 
 	inline AutoLocker(const Locking& locking)
-		:
-		fLockable(NULL),
-		fLocking(locking),
-		fLocked(false)
+		: fLockable(NULL),
+		  fLocking(locking),
+		  fLocked(false)
 	{
 	}
 
-	inline AutoLocker(Lockable* lockable, bool alreadyLocked = false,
-		bool lockIfNotLocked = true)
-		:
-		fLockable(lockable),
-		fLocked(fLockable && alreadyLocked)
+	inline AutoLocker(Lockable* lockable, bool alreadyLocked = false, bool lockIfNotLocked = true)
+		: fLockable(lockable),
+		  fLocked(fLockable && alreadyLocked)
 	{
 		if (!alreadyLocked && lockIfNotLocked)
 			Lock();
 	}
 
-	inline AutoLocker(Lockable& lockable, bool alreadyLocked = false,
-		bool lockIfNotLocked = true)
-		:
-		fLockable(&lockable),
-		fLocked(fLockable && alreadyLocked)
+	inline AutoLocker(Lockable& lockable, bool alreadyLocked = false, bool lockIfNotLocked = true)
+		: fLockable(&lockable),
+		  fLocked(fLockable && alreadyLocked)
 	{
 		if (!alreadyLocked && lockIfNotLocked)
 			Lock();
 	}
 
-	inline ~AutoLocker()
-	{
-		Unlock();
-	}
+	inline ~AutoLocker() { Unlock(); }
 
-	inline void SetTo(Lockable* lockable, bool alreadyLocked,
-		bool lockIfNotLocked = true)
+	inline void SetTo(Lockable* lockable, bool alreadyLocked, bool lockIfNotLocked = true)
 	{
 		Unlock();
 		fLockable = lockable;
@@ -113,8 +85,7 @@ public:
 			Lock();
 	}
 
-	inline void SetTo(Lockable& lockable, bool alreadyLocked,
-		bool lockIfNotLocked = true)
+	inline void SetTo(Lockable& lockable, bool alreadyLocked, bool lockIfNotLocked = true)
 	{
 		SetTo(&lockable, alreadyLocked, lockIfNotLocked);
 	}
@@ -158,18 +129,18 @@ public:
 		return *this;
 	}
 
-	inline bool IsLocked() const	{ return fLocked; }
+	inline bool IsLocked() const { return fLocked; }
 
-	inline operator bool() const	{ return fLocked; }
+	inline operator bool() const { return fLocked; }
 
 protected:
-	Lockable*	fLockable;
-	Locking		fLocking;
-	bool		fLocked;
+	Lockable* fLockable;
+	Locking fLocking;
+	bool fLocked;
 };
 
 
-}	// namespace BPrivate
+}  // namespace BPrivate
 
 using BPrivate::AutoLocker;
 using BPrivate::AutoLockerReadLocking;

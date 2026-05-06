@@ -21,337 +21,330 @@
 #include "Debug.h"
 #include "Tools.h"
 
-class Settings
-{
+class Settings {
 public:
-    Settings(BString name)
-        :
-        fName(name),
-        fLabel("")
-    {
-        fLoadMessage = nullptr;
-        fSaveMessage = nullptr;
-
-        fAppName = Tools::AppName();
-        fSettings = new BMessage();
-        _Load(fSettings);
-    }
-
-
-    ~Settings()
-    {
-       delete fLoadMessage;
-       delete fSaveMessage;
-       delete fSettings;
-    }
-
-
-    void Clear(void)
-    {
-        if (fName == "")
-            return;
-
-        delete fSaveMessage;
-        fSaveMessage = new BMessage();
-        _Save();
-
-    }
-
-
-    void ClearAll(void)
-    {
-        delete fSaveMessage;
-        fSaveMessage = new BMessage();
-        delete fSettings;
-        fSettings = new BMessage();
-        _Save();
-        // TODO: better delete file and directory
-
-    }
-
-
-    Settings& operator<<(std::ostream& (*f)(std::ostream&))
-    {
-        if (f == static_cast<std::ostream& (*)(std::ostream&)>(std::endl)) {
-            _Save();
-            delete fSettings;
-            fSettings = nullptr;
-            delete fLoadMessage;
-            fLoadMessage = nullptr;
-            delete fSaveMessage;
-            fSaveMessage = nullptr;
-        }
-
-        return *this;
-    }
+	Settings(BString name)
+		: fName(name),
+		  fLabel("")
+	{
+		fLoadMessage = nullptr;
+		fSaveMessage = nullptr;
+
+		fAppName = Tools::AppName();
+		fSettings = new BMessage();
+		_Load(fSettings);
+	}
+
+
+	~Settings()
+	{
+		delete fLoadMessage;
+		delete fSaveMessage;
+		delete fSettings;
+	}
+
+
+	void Clear(void)
+	{
+		if (fName == "")
+			return;
+
+		delete fSaveMessage;
+		fSaveMessage = new BMessage();
+		_Save();
+	}
+
+
+	void ClearAll(void)
+	{
+		delete fSaveMessage;
+		fSaveMessage = new BMessage();
+		delete fSettings;
+		fSettings = new BMessage();
+		_Save();
+		// TODO: better delete file and directory
+	}
+
+
+	Settings& operator<<(std::ostream& (*f)(std::ostream&))
+	{
+		if (f == static_cast<std::ostream& (*)(std::ostream&)>(std::endl)) {
+			_Save();
+			delete fSettings;
+			fSettings = nullptr;
+			delete fLoadMessage;
+			fLoadMessage = nullptr;
+			delete fSaveMessage;
+			fSaveMessage = nullptr;
+		}
+
+		return *this;
+	}
+
+
+	Settings& operator<<(BString const& str)
+	{
+		if (fLabel.Length() == 0) {
+			fLabel = str;
+			return *this;
+		}
+
+		_CheckSaveNull();
 
+		BString temp;
+		if (fSaveMessage->FindString(fLabel, 0, &temp) == B_OK)
+			fSaveMessage->ReplaceString(fLabel, str);
+		else
+			fSaveMessage->AddString(fLabel, str);
 
-    Settings& operator<<(BString const& str)
-    {
-        if (fLabel.Length() == 0) {
-            fLabel = str;
-            return *this;
-        }
+		fLabel = "";
 
-        _CheckSaveNull();
+		return *this;
+	}
 
-        BString temp;
-        if (fSaveMessage->FindString(fLabel, 0, &temp) == B_OK)
-            fSaveMessage->ReplaceString(fLabel, str);
-        else
-            fSaveMessage->AddString(fLabel, str);
+	/*
+		Settings& operator<<(bool value)
+		{
+			int32 newvalue = static_cast<int32>(value);
 
-        fLabel = "";
+			if (fLabel.Length() == 0) {
+				return *this;
+			} else {
+				if (fSaveMessage == nullptr) {
+					fSaveMessage = new BMessage();
+					fSettings->FindMessage(fName, 0, fSaveMessage);
+				}
+
+				int32 temp = 0;
+				if (fSaveMessage->FindInt32(fLabel, 0, &temp) == B_OK)
+					fSaveMessage->ReplaceInt32(fLabel, newvalue);
+				else
+					fSaveMessage->AddInt32(fLabel, newvalue);
+
+				fLabel = "";
+			}
+
+			return *this;
+		}
+	*/
 
-        return *this;
-    }
+	Settings& operator<<(int32 value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-/*
-    Settings& operator<<(bool value)
-    {
-        int32 newvalue = static_cast<int32>(value);
+		_CheckSaveNull();
 
-        if (fLabel.Length() == 0) {
-            return *this;
-        } else {
-            if (fSaveMessage == nullptr) {
-                fSaveMessage = new BMessage();
-                fSettings->FindMessage(fName, 0, fSaveMessage);
-            }
+		int32 temp = 0;
+		if (fSaveMessage->FindInt32(fLabel, 0, &temp) == B_OK)
+			fSaveMessage->ReplaceInt32(fLabel, value);
+		else
+			fSaveMessage->AddInt32(fLabel, value);
 
-            int32 temp = 0;
-            if (fSaveMessage->FindInt32(fLabel, 0, &temp) == B_OK)
-                fSaveMessage->ReplaceInt32(fLabel, newvalue);
-            else
-                fSaveMessage->AddInt32(fLabel, newvalue);
+		fLabel = "";
 
-            fLabel = "";
-        }
+		return *this;
+	}
 
-        return *this;
-    }
-*/
 
-    Settings& operator<<(int32 value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+	Settings& operator<<(float value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-        _CheckSaveNull();
+		_CheckSaveNull();
 
-        int32 temp = 0;
-        if (fSaveMessage->FindInt32(fLabel, 0, &temp) == B_OK)
-            fSaveMessage->ReplaceInt32(fLabel, value);
-        else
-            fSaveMessage->AddInt32(fLabel, value);
+		float temp = 0;
+		if (fSaveMessage->FindFloat(fLabel, 0, &temp) == B_OK)
+			fSaveMessage->ReplaceFloat(fLabel, value);
+		else
+			fSaveMessage->AddFloat(fLabel, value);
 
-        fLabel = "";
+		fLabel = "";
 
-        return *this;
-    }
+		return *this;
+	}
 
 
-    Settings& operator<<(float value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+	Settings& operator<<(BRect value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-        _CheckSaveNull();
+		_CheckSaveNull();
 
-        float temp = 0;
-        if (fSaveMessage->FindFloat(fLabel, 0, &temp) == B_OK)
-            fSaveMessage->ReplaceFloat(fLabel, value);
-        else
-            fSaveMessage->AddFloat(fLabel, value);
+		BRect temp;
+		if (fSaveMessage->FindRect(fLabel, 0, &temp) == B_OK)
+			fSaveMessage->ReplaceRect(fLabel, value);
+		else
+			fSaveMessage->AddRect(fLabel, value);
 
-        fLabel = "";
+		fLabel = "";
 
-        return *this;
-    }
+		return *this;
+	}
 
 
-    Settings& operator<<(BRect value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+	Settings& operator>>(BString& str)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-        _CheckSaveNull();
+		_CheckLoadNull();
 
-        BRect temp;
-        if (fSaveMessage->FindRect(fLabel, 0, &temp) == B_OK)
-            fSaveMessage->ReplaceRect(fLabel, value);
-        else
-            fSaveMessage->AddRect(fLabel, value);
+		BString temp = "";
+		if (fLoadMessage->FindString(fLabel, 0, &temp) == B_OK)
+			str = temp;
 
-        fLabel = "";
+		fLabel = "";
+		return *this;
+	}
 
-        return *this;
-    }
+	/*
+		Settings& operator>>(bool & value)
+		{
+			if (fLabel.Length() == 0)
+				return *this;
 
+			if (fLoadMessage == nullptr) {
+				fLoadMessage = new BMessage();
+				fSettings->FindMessage(fName, 0, fLoadMessage);
+			}
 
-    Settings& operator>>(BString & str)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+			bool temp = 0;
+			if (fLoadMessage->FindBool(fLabel, 0, &temp) == B_OK)
+				value = temp;
 
-        _CheckLoadNull();
+			fLabel = "";
+			return *this;
+		}
+	*/
 
-        BString temp = "";
-        if (fLoadMessage->FindString(fLabel, 0, &temp) == B_OK)
-            str = temp;
+	Settings& operator>>(int32& value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-        fLabel = "";
-        return *this;
-    }
+		_CheckLoadNull();
 
-/*
-    Settings& operator>>(bool & value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+		int32 temp = 0;
+		if (fLoadMessage->FindInt32(fLabel, 0, &temp) == B_OK)
+			value = temp;
 
-        if (fLoadMessage == nullptr) {
-            fLoadMessage = new BMessage();
-            fSettings->FindMessage(fName, 0, fLoadMessage);
-        }
+		fLabel = "";
+		return *this;
+	}
 
-        bool temp = 0;
-        if (fLoadMessage->FindBool(fLabel, 0, &temp) == B_OK)
-            value = temp;
 
-        fLabel = "";
-        return *this;
-    }
-*/
+	Settings& operator>>(float& value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-    Settings& operator>>(int32 & value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+		_CheckLoadNull();
 
-        _CheckLoadNull();
+		float temp = 0;
+		if (fLoadMessage->FindFloat(fLabel, 0, &temp) == B_OK)
+			value = temp;
 
-        int32 temp = 0;
-        if (fLoadMessage->FindInt32(fLabel, 0, &temp) == B_OK)
-            value = temp;
+		fLabel = "";
+		return *this;
+	}
 
-        fLabel = "";
-        return *this;
-    }
 
+	Settings& operator>>(BRect& value)
+	{
+		if (fLabel.Length() == 0)
+			return *this;
 
-    Settings& operator>>(float & value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
+		_CheckLoadNull();
 
-        _CheckLoadNull();
+		BRect temp;
+		if (fLoadMessage->FindRect(fLabel, 0, &temp) == B_OK)
+			value = temp;
 
-        float temp = 0;
-        if (fLoadMessage->FindFloat(fLabel, 0, &temp) == B_OK)
-            value = temp;
-
-        fLabel = "";
-        return *this;
-    }
-
-
-    Settings& operator>>(BRect & value)
-    {
-        if (fLabel.Length() == 0)
-            return *this;
-
-        _CheckLoadNull();
-
-        BRect temp;
-        if (fLoadMessage->FindRect(fLabel, 0, &temp) == B_OK)
-            value = temp;
-
-        fLabel = "";
-        return *this;
-    }
+		fLabel = "";
+		return *this;
+	}
 
 private:
+	status_t _Open(BFile& file, uint32 mode)
+	{
+		BPath path;
+		if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK)
+			return B_ERROR;
 
-    status_t _Open(BFile& file, uint32 mode)
-    {
-        BPath path;
-        if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK)
-            return B_ERROR;
-
-        path.Append(fAppName);
-        create_directory(path.Path(), 0755);
-        path.Append(fAppName);
-        return file.SetTo(path.Path(), mode);
-    }
-
-
-    status_t _Save()
-    {
-        BFile file;
-        status_t status = _Open(file, B_WRITE_ONLY | B_CREATE_FILE
-            | B_ERASE_FILE);
-        if (status < B_OK)
-            return status;
-
-        BMessage msg;
-
-        if (fSettings->FindMessage(fName, &msg) == B_OK )
-            fSettings->ReplaceMessage(fName, fSaveMessage);
-        else
-            fSettings->AddMessage(fName, fSaveMessage);
-
-        status = fSettings->Flatten(&file);
-        if (status < B_OK)
-            return status;
-
-        return status;
-    }
+		path.Append(fAppName);
+		create_directory(path.Path(), 0755);
+		path.Append(fAppName);
+		return file.SetTo(path.Path(), mode);
+	}
 
 
-    status_t _Load(BMessage * settings)
-    {
-        BFile file;
-        status_t status = _Open(file, B_READ_ONLY);
-        if (status < B_OK)
-            return status;
+	status_t _Save()
+	{
+		BFile file;
+		status_t status = _Open(file, B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
+		if (status < B_OK)
+			return status;
 
-        return settings->Unflatten(&file);
-    }
+		BMessage msg;
 
+		if (fSettings->FindMessage(fName, &msg) == B_OK)
+			fSettings->ReplaceMessage(fName, fSaveMessage);
+		else
+			fSettings->AddMessage(fName, fSaveMessage);
 
-    void _CheckSaveNull(void)
-    {
-        if (fSettings == nullptr) {
-            fSettings = new BMessage();
-            _Load(fSettings);
-        } else if (fSaveMessage == nullptr) {
-            fSaveMessage = new BMessage();
-            fSettings->FindMessage(fName, 0, fSaveMessage);
-        }
-    }
+		status = fSettings->Flatten(&file);
+		if (status < B_OK)
+			return status;
 
-    void _CheckLoadNull(void)
-    {
-        if (fSettings == nullptr) {
-            fSettings = new BMessage();
-            _Load(fSettings);
-        } else if (fLoadMessage == nullptr) {
-            fLoadMessage = new BMessage();
-            fSettings->FindMessage(fName, 0, fLoadMessage);
-        }
-    }
+		return status;
+	}
 
 
-    BString                 fName;
-    BString                 fLabel;
-    BString                 fAppName;
-    BMessage*               fSettings;
-    BMessage*               fSaveMessage;
-    BMessage*               fLoadMessage;
+	status_t _Load(BMessage* settings)
+	{
+		BFile file;
+		status_t status = _Open(file, B_READ_ONLY);
+		if (status < B_OK)
+			return status;
 
-    Debug                   out;
+		return settings->Unflatten(&file);
+	}
 
+
+	void _CheckSaveNull(void)
+	{
+		if (fSettings == nullptr) {
+			fSettings = new BMessage();
+			_Load(fSettings);
+		} else if (fSaveMessage == nullptr) {
+			fSaveMessage = new BMessage();
+			fSettings->FindMessage(fName, 0, fSaveMessage);
+		}
+	}
+
+	void _CheckLoadNull(void)
+	{
+		if (fSettings == nullptr) {
+			fSettings = new BMessage();
+			_Load(fSettings);
+		} else if (fLoadMessage == nullptr) {
+			fLoadMessage = new BMessage();
+			fSettings->FindMessage(fName, 0, fLoadMessage);
+		}
+	}
+
+
+	BString fName;
+	BString fLabel;
+	BString fAppName;
+	BMessage* fSettings;
+	BMessage* fSaveMessage;
+	BMessage* fLoadMessage;
+
+	Debug out;
 };
 
 #endif

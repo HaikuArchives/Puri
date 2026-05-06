@@ -14,23 +14,17 @@
 
 #include "IntroWindow.h"
 
-class MainApplication : public BApplication
-{
+class MainApplication : public BApplication {
 public:
-    MainApplication(void)
-        :
-        BApplication("application/x-vnd.cipri.Puri")
-    {
+	MainApplication(void)
+		: BApplication("application/x-vnd.cipri.Puri")
+	{
+	}
 
-    }
-
-    virtual void ReadyToRun(void)
-    {
-        fIntroWindow = new IntroWindow();
-    }
+	virtual void ReadyToRun(void) { fIntroWindow = new IntroWindow(); }
 
 private:
-    IntroWindow*		fIntroWindow;
+	IntroWindow* fIntroWindow;
 };
 
 #endif

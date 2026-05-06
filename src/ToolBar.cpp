@@ -13,14 +13,12 @@
 #include "Tools.h"
 
 ToolBar::ToolBar(void)
-	:
-	BView(BRect(), "toolbar", B_FOLLOW_NONE, B_WILL_DRAW |
-		B_FULL_UPDATE_ON_RESIZE),
-	fSpacing(0),
-	fIconSpace(2),
-	fButtonHighlight(-1),
-	fButtonPressed(false),
-	fFontSize(14)
+	: BView(BRect(), "toolbar", B_FOLLOW_NONE, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE),
+	  fSpacing(0),
+	  fIconSpace(2),
+	  fButtonHighlight(-1),
+	  fButtonPressed(false),
+	  fFontSize(14)
 {
 	fTargetHandler = NULL;
 	fTargetLooper = NULL;
@@ -29,7 +27,7 @@ ToolBar::ToolBar(void)
 	SetDrawingMode(B_OP_ALPHA);
 	SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_OVERLAY);
 
-	SetFontSize(fFontSize);    
+	SetFontSize(fFontSize);
 }
 
 
@@ -54,8 +52,6 @@ void
 ToolBar::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-
-
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -77,31 +73,30 @@ ToolBar::AddButton(BString const& label, BString const& iconName, BMessage* msg)
 	fButtonIconName.push_back(iconName);
 	fButtonIcon.push_back(Tools::LoadBitmap(iconName, fIconWidth));
 	fButtonMsg.push_back(msg);
-	BRect rect = BRect(0, 0, StringWidth(label) + fButtonMargin.left +
-		fButtonMargin.right, fFontHeight.ascent + 2 * fFontHeight.descent +
-			fButtonMargin.top + fButtonMargin.bottom);
+	BRect rect = BRect(0, 0, StringWidth(label) + fButtonMargin.left + fButtonMargin.right,
+		fFontHeight.ascent + 2 * fFontHeight.descent + fButtonMargin.top + fButtonMargin.bottom);
 
 	if (fButtonIcon.back() != NULL)
 		rect.right += fIconWidth;
 
 	if (fButtonBounds.empty() == false)
-		rect.OffsetBy(fButtonBounds.back().RightTop() +
-			BPoint(fSpacing, 0));
+		rect.OffsetBy(fButtonBounds.back().RightTop() + BPoint(fSpacing, 0));
 	else
 		rect.OffsetBy(fMargin.LeftTop());
 
 	fButtonBounds.push_back(rect);
 
-	fIconOffset.push_back(rect.LeftTop() +
-		BPoint(fButtonMargin.left, (rect.Height() - fIconWidth) / 2));
+	fIconOffset.push_back(
+		rect.LeftTop() + BPoint(fButtonMargin.left, (rect.Height() - fIconWidth) / 2));
 
 	if (fButtonIcon.back() != NULL)
-		fTxtOffset.push_back(rect.LeftBottom() + BPoint(fButtonMargin.left +
-			fIconWidth + fIconSpace, -fButtonMargin.bottom - fFontHeight.descent));
+		fTxtOffset.push_back(rect.LeftBottom()
+							 + BPoint(fButtonMargin.left + fIconWidth + fIconSpace,
+								 -fButtonMargin.bottom - fFontHeight.descent));
 	else
-		fTxtOffset.push_back(rect.LeftBottom() + BPoint(fButtonMargin.left,
-			-fButtonMargin.bottom - fFontHeight.descent));
-
+		fTxtOffset.push_back(
+			rect.LeftBottom()
+			+ BPoint(fButtonMargin.left, -fButtonMargin.bottom - fFontHeight.descent));
 }
 
 
@@ -176,7 +171,7 @@ ToolBar::MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage)
 
 				for (int j = 0; j < static_cast<int>(fButtonBounds.size()); ++j) {
 					if (j == i) {
-						DrawBitmapAsync(fButtonIcon[j], fIconOffset[j] + BPoint(1, 1) );
+						DrawBitmapAsync(fButtonIcon[j], fIconOffset[j] + BPoint(1, 1));
 						DrawString(fButton[j], fTxtOffset[j] + BPoint(1, 1));
 					} else {
 						DrawBitmapAsync(fButtonIcon[j], fIconOffset[j]);
@@ -241,7 +236,7 @@ ToolBar::SetTarget(BHandler* handler, BLooper* looper)
 int
 ToolBar::FontSize(void)
 {
-	return fFontSize;	
+	return fFontSize;
 }
 
 
@@ -249,7 +244,7 @@ void
 ToolBar::SetFontSize(int const& fontSize)
 {
 	fFontSize = fontSize;
-	
+
 	BFont font;
 	GetFont(&font);
 	font.SetSize(fFontSize);
@@ -261,11 +256,11 @@ ToolBar::SetFontSize(int const& fontSize)
 	fMargin.Set(5, 3, 5, 0);
 	fButtonMargin.Set(5, 0, 5, 2);
 
-	float height = ceilf(fFontHeight.ascent + 2 * fFontHeight.descent +
-		fMargin.top + fMargin.bottom + fButtonMargin.top + fButtonMargin.bottom);
+	float height = ceilf(fFontHeight.ascent + 2 * fFontHeight.descent + fMargin.top + fMargin.bottom
+						 + fButtonMargin.top + fButtonMargin.bottom);
 
-	fIconWidth = height - fMargin.top - fMargin.bottom - fButtonMargin.top -
-		fButtonMargin.bottom - fFontHeight.descent - 2;
+	fIconWidth = height - fMargin.top - fMargin.bottom - fButtonMargin.top - fButtonMargin.bottom
+				 - fFontHeight.descent - 2;
 
 	SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, height));
 	SetExplicitMinSize(BSize(0, height));

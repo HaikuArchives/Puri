@@ -16,36 +16,37 @@
 #include <OptionPopUp.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "Debug.h"
 
 
-class ICSChatView : public BGroupView
-{
+class ICSChatView : public BGroupView {
 public:
-                    ICSChatView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSChatView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
-            void    AddText(BString str);
-            void    AddTellTarget(BString str);
+	void AddText(BString str);
+	void AddTellTarget(BString str);
 
-    enum{   M_SEND_BUTTON = 'isb1'  };
+	enum {
+		M_SEND_BUTTON = 'isb1'
+	};
 
 private:
-    BTextView*      fTextView;
-    BTextControl*   fTextControl;
-    BOptionPopUp*   fChannel;
-    BButton*        fSendButton;
+	BTextView* fTextView;
+	BTextControl* fTextControl;
+	BOptionPopUp* fChannel;
+	BButton* fSendButton;
 
-    BScrollBar*     fScrollBar;
+	BScrollBar* fScrollBar;
 
-    BLocker         fLocker;
+	BLocker fLocker;
 
-    Debug           out;
+	Debug out;
 };
 
 
-#endif // ICSCHATVIEW_H
+#endif	// ICSCHATVIEW_H

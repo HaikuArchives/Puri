@@ -16,22 +16,23 @@
 #include "ToolBar.h"
 
 ICSInfoView::ICSInfoView(void)
-    :
-    BGroupView("icsinfoview", B_VERTICAL, 0)
+	: BGroupView("icsinfoview", B_VERTICAL, 0)
 {
-    fTextView = new BTextView("info_textview");
+	fTextView = new BTextView("info_textview");
 
-    ToolBar* toolBar = new ToolBar();
-    toolBar->AddButton("Back", "seek_backward");
-    toolBar->AddButton("Forward", "seek_forward");
-    toolBar->AddButton("Stop", "playback_stop");
-    toolBar->AddButton("Refresh", "swap");
-    toolBar->AddButton("Home", "home");
+	ToolBar* toolBar = new ToolBar();
+	toolBar->AddButton("Back", "seek_backward");
+	toolBar->AddButton("Forward", "seek_forward");
+	toolBar->AddButton("Stop", "playback_stop");
+	toolBar->AddButton("Refresh", "swap");
+	toolBar->AddButton("Home", "home");
 
-    BLayoutBuilder::Group<>(this)
-        .Add(fTextView)
-        .Add(toolBar)
-    ;
+	// clang-format off
+	BLayoutBuilder::Group<>(this)
+		.Add(fTextView)
+		.Add(toolBar)
+	;
+	// clang-format on
 }
 
 
@@ -45,11 +46,9 @@ ICSInfoView::AttachedToWindow(void)
 void
 ICSInfoView::MessageReceived(BMessage* message)
 {
-    switch (message->what) {
-
-
+	switch (message->what) {
 		default:
-            BGroupView::MessageReceived(message);
+			BGroupView::MessageReceived(message);
 			break;
 	}
 }

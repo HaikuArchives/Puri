@@ -9,36 +9,40 @@
 #ifndef ICSFORMULAWINDOW_H
 #define ICSFORMULAWINDOW_H
 
-#include <InterfaceKit.h>
 #include <GroupLayout.h>
+#include <InterfaceKit.h>
 #include <Window.h>
 
 #include "Debug.h"
 
-class ICSFormulaWindow : public BWindow
-{
+class ICSFormulaWindow : public BWindow {
 public:
-                    ICSFormulaWindow(BWindow* target);
-    virtual void    MessageReceived(BMessage* message);
-    virtual bool    QuitRequested(void);
-    
-    enum{M_OK = 'iob1', M_HELP = 'ihb1', M_CANCEL = 'icb1'};
+	ICSFormulaWindow(BWindow* target);
+	virtual void MessageReceived(BMessage* message);
+	virtual bool QuitRequested(void);
+
+	enum {
+		M_OK = 'iob1',
+		M_HELP = 'ihb1',
+		M_CANCEL = 'icb1'
+	};
+
 private:
-            void    _Apply(void);
+	void _Apply(void);
 
-    BWindow*                fTarget;
+	BWindow* fTarget;
 
-    BCheckBox*              fUnrated;
-    BCheckBox*              fRated;
-    BCheckBox*              fActivate;
-    BTextControl*           fEloMin;
-    BTextControl*           fEloMax;
-    BTextControl*           fTimeMin;
-    BTextControl*           fTimeMax;
-    BTextControl*           fIncMin;
-    BTextControl*           fIncMax;
+	BCheckBox* fUnrated;
+	BCheckBox* fRated;
+	BCheckBox* fActivate;
+	BTextControl* fEloMin;
+	BTextControl* fEloMax;
+	BTextControl* fTimeMin;
+	BTextControl* fTimeMax;
+	BTextControl* fIncMin;
+	BTextControl* fIncMax;
 
-    Debug                   out;
+	Debug out;
 };
 
 

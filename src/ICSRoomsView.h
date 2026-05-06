@@ -16,45 +16,42 @@
 #include <OutlineListView.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "Debug.h"
 
-class RoomItem : public BListItem
-{
+class RoomItem : public BListItem {
 public:
-    RoomItem(const char* name);
-    ~RoomItem();
-    virtual void DrawItem(BView* owner, BRect itemRect, bool = false);
+	RoomItem(const char* name);
+	~RoomItem();
+	virtual void DrawItem(BView* owner, BRect itemRect, bool = false);
+
 private:
-    char* fName;
+	char* fName;
 };
 
 
-class RoomsListView : public BOutlineListView
-{
+class RoomsListView : public BOutlineListView {
 public:
-                    RoomsListView(void);
+	RoomsListView(void);
 
 private:
-
 };
 
 
-class ICSRoomsView : public BGroupView
-{
+class ICSRoomsView : public BGroupView {
 public:
-                    ICSRoomsView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSRoomsView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
 private:
-    RoomsListView*      fRoomsListView;
-    BScrollBar*         fScrollBar;
+	RoomsListView* fRoomsListView;
+	BScrollBar* fScrollBar;
 
-    Debug               out;
+	Debug out;
 };
 
 
-#endif // ICSROOMSVIEW_H
+#endif	// ICSROOMSVIEW_H

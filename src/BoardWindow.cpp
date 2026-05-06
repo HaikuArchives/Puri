@@ -30,46 +30,45 @@
 // TODO: use Cardlayout to Offline and Online Chess
 
 BoardWindow::BoardWindow(void)
-	:
-	BWindow(BRect(), "Puri - Master of Chess",
-			/*B_DOCUMENT_WINDOW*/ B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS
-				| B_QUIT_ON_WINDOW_CLOSE
-				| B_AUTO_UPDATE_SIZE_LIMITS | B_OUTLINE_RESIZE),
-	fEngineCanWrite(false),
-	fIndex(0)
+	: BWindow(BRect(), "Puri - Master of Chess",
+		  /*B_DOCUMENT_WINDOW*/ B_TITLED_WINDOW,
+		  B_ASYNCHRONOUS_CONTROLS | B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS
+			  | B_OUTLINE_RESIZE),
+	  fEngineCanWrite(false),
+	  fIndex(0)
 {
 	fICSMainWindow = NULL;
 
-	fSkillSlider = new BSlider("slider", "", new BMessage(MSG_SKILLCHANGED),
-														   0, 20, B_HORIZONTAL);
+	fSkillSlider = new BSlider("slider", "", new BMessage(MSG_SKILLCHANGED), 0, 20, B_HORIZONTAL);
 	fSkillSlider->SetValue(20);
 	fSkillSlider->SetToolTip("Engine Skill: 20");
 	fSkillSlider->Value();
 	fSkillSlider->SetEnabled(true);
 
-	fTabView    = new BTabView("tab_view");
+	fTabView = new BTabView("tab_view");
 	fTabView->SetTabWidth(B_WIDTH_FROM_LABEL);
-	fMovesView  = new MovesView();
+	fMovesView = new MovesView();
 
 	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(fMovesView, fTabsVec.back());
 	fTabsVec.back()->SetLabel("Moves");
 
-	//fTabsVec.push_back( new BTab() );
-	//fTabView->AddTab( new MovesView(), fTabsVec.back() );
-	//fTabsVec.back()->SetLabel( "Moves2" );
+	// fTabsVec.push_back( new BTab() );
+	// fTabView->AddTab( new MovesView(), fTabsVec.back() );
+	// fTabsVec.back()->SetLabel( "Moves2" );
 
 	// Build the layout
 
-	fChessBoard     = new ChessBoardView(BRect(0, 0, 0, 0));
-	fSidebarView    = new SidebarView();
-	fTimeView       = new TimeView(REPLYCODE_TIMEVIEW);
+	fChessBoard = new ChessBoardView(BRect(0, 0, 0, 0));
+	fSidebarView = new SidebarView();
+	fTimeView = new TimeView(REPLYCODE_TIMEVIEW);
 	fNavigationView = new NavigationView();
-	fMaterialView   = new MaterialView();
-	fEngineOutput   = new EngineOutputView(fChessBoard->Board());
+	fMaterialView = new MaterialView();
+	fEngineOutput = new EngineOutputView(fChessBoard->Board());
 
 	fCard = new BCardLayout();
 
+	// clang-format off
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar = _CreateMenuBar())
 		.AddSplit(B_HORIZONTAL).GetSplitView(&fSplitView)
@@ -105,27 +104,27 @@ BoardWindow::BoardWindow(void)
 				//	.AddGlue()
 			.End()
 		.End()
+		// clang-format on
 
 		//.AddGrid()
 		//	.Add( new BButton( "left4" , NULL ),0,0 )
-			//.Add( new BButton( "left5" , NULL ),2,2 )
-	;
-/*
-	fCard->AddView( new BButton( "test1", "test1",NULL) );
-	fCard->AddView( new BButton( "test2", "test2",NULL) );
-	fCard->AddView( new BButton( "test3", "test3",NULL) );
-	fCard->SetVisibleItem( 0L );
-	fCard->SetVisible(true);
-*/
-	//fMiddleColumn->AlignLayoutWith( fRightColumn, B_VERTICAL);
+		//.Add( new BButton( "left5" , NULL ),2,2 )
+		;
+	/*
+		fCard->AddView( new BButton( "test1", "test1",NULL) );
+		fCard->AddView( new BButton( "test2", "test2",NULL) );
+		fCard->AddView( new BButton( "test3", "test3",NULL) );
+		fCard->SetVisibleItem( 0L );
+		fCard->SetVisible(true);
+	*/
+	// fMiddleColumn->AlignLayoutWith( fRightColumn, B_VERTICAL);
 	fSplitView->SetSplitterSize(9);
 	fSplitView->SetSpacing(0);
 	fMaterialSV->SetSplitterSize(9);
 	fMaterialSV->SetSpacing(0);
 	fChessBoard->MakeFocus();
 
-	fEngine = new Engine("stockfish", REPLYCODE_ENGINE,
-							this, this, B_LOWEST_ACTIVE_PRIORITY);
+	fEngine = new Engine("stockfish", REPLYCODE_ENGINE, this, this, B_LOWEST_ACTIVE_PRIORITY);
 	fEngine->PostMessage(MSG_ENG_START);
 	_LoadSettings();
 	Show();
@@ -134,18 +133,17 @@ BoardWindow::BoardWindow(void)
 }
 
 
-BoardWindow::BoardWindow(int index, bool userIsWhite, BString whiteName,
-	BString blackName, ICSMainWindow* icswindow, ICS* ics)
-	:
-	BWindow(BRect(), " ",
-			B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS
-			   /* | B_QUIT_ON_WINDOW_CLOSE*/
-				| B_AUTO_UPDATE_SIZE_LIMITS | B_OUTLINE_RESIZE),
-	fICSMainWindow(icswindow),
-	fICS(ics),
-	fSavedFrame(BRect()),
-	fEngineCanWrite(true),
-	fIndex(index)
+BoardWindow::BoardWindow(int index, bool userIsWhite, BString whiteName, BString blackName,
+	ICSMainWindow* icswindow, ICS* ics)
+	: BWindow(BRect(), " ", B_TITLED_WINDOW,
+		  B_ASYNCHRONOUS_CONTROLS
+			  /* | B_QUIT_ON_WINDOW_CLOSE*/
+			  | B_AUTO_UPDATE_SIZE_LIMITS | B_OUTLINE_RESIZE),
+	  fICSMainWindow(icswindow),
+	  fICS(ics),
+	  fSavedFrame(BRect()),
+	  fEngineCanWrite(true),
+	  fIndex(index)
 {
 	fPlayerName[0] = whiteName;
 	fPlayerName[1] = blackName;
@@ -154,39 +152,39 @@ BoardWindow::BoardWindow(int index, bool userIsWhite, BString whiteName,
 	fMenuBar->Hide();
 	fICSConnectMI->SetMarked(true);
 
-	fSkillSlider = new BSlider("slider", "", new BMessage(MSG_SKILLCHANGED),
-														   0, 20, B_HORIZONTAL);
+	fSkillSlider = new BSlider("slider", "", new BMessage(MSG_SKILLCHANGED), 0, 20, B_HORIZONTAL);
 	fSkillSlider->SetValue(20);
 	fSkillSlider->SetToolTip("Engine Skill: 20");
 	fSkillSlider->Value();
 	fSkillSlider->SetEnabled(true);
 
-	fTabView    = new BTabView("tab_view");
+	fTabView = new BTabView("tab_view");
 	fTabView->SetTabWidth(B_WIDTH_FROM_LABEL);
-	fMovesView  = new MovesView();
+	fMovesView = new MovesView();
 
 	fTabsVec.push_back(new BTab());
 	fTabView->AddTab(fMovesView, fTabsVec.back());
 	fTabsVec.back()->SetLabel("Moves");
 
-	//fTabsVec.push_back( new BTab() );
-	//fTabView->AddTab( new MovesView(), fTabsVec.back() );
-	//fTabsVec.back()->SetLabel( "Moves2" );
+	// fTabsVec.push_back( new BTab() );
+	// fTabView->AddTab( new MovesView(), fTabsVec.back() );
+	// fTabsVec.back()->SetLabel( "Moves2" );
 
 	// Build the layout
 
-	fChessBoard     = new ChessBoardView(BRect(0, 0, 0, 0));
-	fSidebarView    = new SidebarView;
-	fTimeView       = new TimeView(REPLYCODE_TIMEVIEW);
+	fChessBoard = new ChessBoardView(BRect(0, 0, 0, 0));
+	fSidebarView = new SidebarView;
+	fTimeView = new TimeView(REPLYCODE_TIMEVIEW);
 	fNavigationView = new NavigationView();
-	fMaterialView   = new MaterialView;
-	fChatView       = new ICSChatView;
+	fMaterialView = new MaterialView;
+	fChatView = new ICSChatView;
 
 	BSplitView* fSplitView;
 	BSplitView* fMaterialSV;
 
 	fCard = new BCardLayout();
 
+	// clang-format off
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.AddSplit(B_HORIZONTAL).GetSplitView(&fSplitView)
 			.AddGroup(B_VERTICAL, 0, 3.5)
@@ -218,19 +216,20 @@ BoardWindow::BoardWindow(int index, bool userIsWhite, BString whiteName,
 				//	.AddGlue()
 			.End()
 		.End()
+		// clang-format on
 
 		//.AddGrid()
 		//	.Add( new BButton( "left4" , NULL ),0,0 )
-			//.Add( new BButton( "left5" , NULL ),2,2 )
-	;
-/*
-	fCard->AddView( new BButton( "test1", "test1",NULL) );
-	fCard->AddView( new BButton( "test2", "test2",NULL) );
-	fCard->AddView( new BButton( "test3", "test3",NULL) );
-	fCard->SetVisibleItem( 0L );
-	fCard->SetVisible(true);
-*/
-	//fMiddleColumn->AlignLayoutWith( fRightColumn, B_VERTICAL);
+		//.Add( new BButton( "left5" , NULL ),2,2 )
+		;
+	/*
+		fCard->AddView( new BButton( "test1", "test1",NULL) );
+		fCard->AddView( new BButton( "test2", "test2",NULL) );
+		fCard->AddView( new BButton( "test3", "test3",NULL) );
+		fCard->SetVisibleItem( 0L );
+		fCard->SetVisible(true);
+	*/
+	// fMiddleColumn->AlignLayoutWith( fRightColumn, B_VERTICAL);
 	fSplitView->SetSplitterSize(9);
 	fSplitView->SetSpacing(0);
 	fSplitView->SetCollapsible(true);
@@ -238,13 +237,13 @@ BoardWindow::BoardWindow(int index, bool userIsWhite, BString whiteName,
 	fMaterialSV->SetSpacing(0);
 	fMaterialSV->SetCollapsible(true);
 	fChessBoard->MakeFocus();
-	//fMenuBar->Hide();
+	// fMenuBar->Hide();
 
-	fEngine = NULL;/*new Engine("stockfish", REPLYCODE_ENGINE,
-							this, this, B_LOWEST_ACTIVE_PRIORITY);
-	//fEngine->PostMessage(MSG_ENG_START);
-	//PostMessage(MENU_GAME_NEWGAME);
-*/
+	fEngine = NULL; /*new Engine("stockfish", REPLYCODE_ENGINE,
+							 this, this, B_LOWEST_ACTIVE_PRIORITY);
+	 //fEngine->PostMessage(MSG_ENG_START);
+	 //PostMessage(MENU_GAME_NEWGAME);
+ */
 	fChessBoard->SetBoardTurned(!userIsWhite);
 
 
@@ -289,9 +288,14 @@ BoardWindow::_MessageFilter(BMessage* message)
 {
 	if (fICSConnectMI->IsMarked()) {
 		switch (message->what) {
-			case MSG_MOVEFIRST: case MSG_MOVEBACK : case MSG_MOVENEXT:
-			case MSG_MOVELAST : case MSG_GOTO_MOVE: case MENU_GAME_MOVENOW:
-			case MENU_ENGINE_SOENGINE: case MENU_GAME_NEWGAME:
+			case MSG_MOVEFIRST:
+			case MSG_MOVEBACK:
+			case MSG_MOVENEXT:
+			case MSG_MOVELAST:
+			case MSG_GOTO_MOVE:
+			case MENU_GAME_MOVENOW:
+			case MENU_ENGINE_SOENGINE:
+			case MENU_GAME_NEWGAME:
 			case MENU_VIEW_FULLSCREEN:
 				return true;
 			default:
@@ -303,7 +307,8 @@ BoardWindow::_MessageFilter(BMessage* message)
 }
 
 
-void BoardWindow::MessageReceived(BMessage* message)
+void
+BoardWindow::MessageReceived(BMessage* message)
 {
 	if (_MessageFilter(message) == true)
 		return;
@@ -330,7 +335,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 
 
 		case REPLYCODE_TIMEVIEW:
-			int32  value;
+			int32 value;
 			message->FindInt32("time", &value);
 			break;
 
@@ -349,9 +354,9 @@ void BoardWindow::MessageReceived(BMessage* message)
 			break;
 		}
 
-		//case 10:
-		//	be_roster->Launch( "application/x-vnd.cipri.Puri" );
-		//	break;
+			// case 10:
+			//	be_roster->Launch( "application/x-vnd.cipri.Puri" );
+			//	break;
 
 		case MENU_VIEW_3D:
 			f3DMI->SetMarked(!f3DMI->IsMarked());
@@ -365,7 +370,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			fEngineOutput->SetOn(false);
 			fTimeView->Stop();
 			fChessBoard->MoveFirst();
-			fMovesView ->MoveFirst();
+			fMovesView->MoveFirst();
 			fMaterialView->SetMaterial(fChessBoard->GetMaterial());
 			fChessBoard->SetUserCanMove();
 			break;
@@ -378,7 +383,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			fEngineOutput->SetOn(false);
 			fTimeView->Stop();
 			fChessBoard->MoveBack();
-			fMovesView ->MoveBack();
+			fMovesView->MoveBack();
 			fMaterialView->SetMaterial(fChessBoard->GetMaterial());
 			fChessBoard->SetUserCanMove();
 			break;
@@ -390,7 +395,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			fEngineOutput->SetOn(false);
 			fTimeView->Stop();
 			fChessBoard->MoveNext();
-			fMovesView ->MoveNext();
+			fMovesView->MoveNext();
 			fMaterialView->SetMaterial(fChessBoard->GetMaterial());
 			fChessBoard->SetUserCanMove();
 			break;
@@ -402,7 +407,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			fEngineOutput->SetOn(false);
 			fTimeView->Stop();
 			fChessBoard->MoveLast();
-			fMovesView ->MoveLast();
+			fMovesView->MoveLast();
 			fMaterialView->SetMaterial(fChessBoard->GetMaterial());
 			fChessBoard->SetUserCanMove();
 			break;
@@ -413,11 +418,11 @@ void BoardWindow::MessageReceived(BMessage* message)
 			_EngineStop();
 			fEngineIsRunning = false;
 			fEngineOutput->SetOn(false);
-			uint32  idx = 0;
+			uint32 idx = 0;
 			message->FindUInt32("move_idx", &idx);
 			fTimeView->Stop();
 			fChessBoard->GotoMove(idx);
-			fMovesView ->GotoMove(idx);
+			fMovesView->GotoMove(idx);
 			fMaterialView->SetMaterial(fChessBoard->GetMaterial());
 			break;
 		}
@@ -452,7 +457,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 		case MENU_VIEW_MININTERFACE:
 			if (fMinIfMenuItem->IsMarked()) {
 				if (!fShowborderMenuItem->IsMarked())
-					PostMessage( MENU_VIEW_SHOWBORDER);
+					PostMessage(MENU_VIEW_SHOWBORDER);
 
 				if (!fSidebarMenuItem->IsMarked())
 					PostMessage(MENU_VIEW_SIDEBAR);
@@ -466,10 +471,10 @@ void BoardWindow::MessageReceived(BMessage* message)
 				fMinIfMenuItem->SetMarked(false);
 			} else {
 				if (fShowborderMenuItem->IsMarked())
-					PostMessage (MENU_VIEW_SHOWBORDER);
+					PostMessage(MENU_VIEW_SHOWBORDER);
 
 				if (fSidebarMenuItem->IsMarked())
-					PostMessage (MENU_VIEW_SIDEBAR);
+					PostMessage(MENU_VIEW_SIDEBAR);
 
 				if (fShowMBarMenuItem->IsMarked())
 					PostMessage(MENU_VIEW_SHOWMENU);
@@ -563,8 +568,8 @@ void BoardWindow::MessageReceived(BMessage* message)
 
 		case MENU_VIEW_ALWAYSONTOP:
 			fAlwaysOnTopMenuItem->SetMarked(!fAlwaysOnTopMenuItem->IsMarked());
-			SetFeel(fAlwaysOnTopMenuItem->IsMarked() ?
-							 B_FLOATING_ALL_WINDOW_FEEL : B_NORMAL_WINDOW_FEEL);
+			SetFeel(fAlwaysOnTopMenuItem->IsMarked() ? B_FLOATING_ALL_WINDOW_FEEL
+													 : B_NORMAL_WINDOW_FEEL);
 			break;
 
 		// TODO: after the game, ask for isready,
@@ -612,8 +617,8 @@ void BoardWindow::MessageReceived(BMessage* message)
 			break;
 
 		case ICS_DISCONNECTED:
-		  //  fICSConnectMI->SetMarked(false);
-		   // fChessBoard->SetUserCanMove(false);
+			//  fICSConnectMI->SetMarked(false);
+			// fChessBoard->SetUserCanMove(false);
 			break;
 
 		case MSG_SEND_ICS_CMD:
@@ -623,8 +628,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			break;
 
 		case MENU_HELP_MOVEASSISTANT:
-			fMoveAssistantMenuItem->SetMarked(
-										   !fMoveAssistantMenuItem->IsMarked());
+			fMoveAssistantMenuItem->SetMarked(!fMoveAssistantMenuItem->IsMarked());
 			fChessBoard->ShowValidMoves(fMoveAssistantMenuItem->IsMarked());
 			break;
 
@@ -635,8 +639,8 @@ void BoardWindow::MessageReceived(BMessage* message)
 		{
 			BString str = "file://";
 			str << Tools::AppPath() << "/data/Help/Help.html";
-			char const* args[] = {str.String(), 0};
-			be_roster->Launch("text/html", 1, const_cast<char **>(args));
+			char const* args[] = { str.String(), 0 };
+			be_roster->Launch("text/html", 1, const_cast<char**>(args));
 			break;
 		}
 
@@ -704,7 +708,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			BString move;
 			message->FindString("info", &move);
 			std::vector<BString> vec = Tools::Split(move);
-			fTimeView->SetTimeMS(atoi(vec[5]), atoi(vec[1])%2 == 1);
+			fTimeView->SetTimeMS(atoi(vec[5]), atoi(vec[1]) % 2 == 1);
 			fChessBoard->DoICSMove(vec[3]);
 			break;
 		}
@@ -750,7 +754,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 		{
 			fTimeView->Stop();
 			fChessBoard->SetUserCanMove(true);
-		 //   (new BAlert("Not Playing", "Game not active", "OK"))->Go();
+			//   (new BAlert("Not Playing", "Game not active", "OK"))->Go();
 
 			break;
 		}
@@ -793,7 +797,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 			bool isWhite;
 			message->FindString("wuser", &wuser);
 			message->FindString("buser", &buser);
-			message->FindBool("iswhite", & isWhite);
+			message->FindBool("iswhite", &isWhite);
 
 			fChessBoard->SetBoardTurned(!isWhite);
 
@@ -831,8 +835,7 @@ void BoardWindow::MessageReceived(BMessage* message)
 				str << BLK_GAME_MOVE << " " << fChessBoard->LastMoveICSF();
 				SendICS(str, fICSMainWindow);
 				fChessBoard->SetUserCanMove(false);
-			} else if (fEngineOffMenuItem->IsMarked() == false)
-			{
+			} else if (fEngineOffMenuItem->IsMarked() == false) {
 				_EngineGo();
 			}
 
@@ -861,33 +864,33 @@ BMenuBar*
 BoardWindow::_CreateMenuBar(void)
 {
 	BMenuBar* menuBar = new BMenuBar("BoardWindowMenuBar");
-	BMenuItem*	menuItem;
+	BMenuItem* menuItem;
 
-	BMenu*	applicationMenu = new BMenu("Application");
+	BMenu* applicationMenu = new BMenu("Application");
 	menuBar->AddItem(applicationMenu);
-	BMenu*  newSubMenu = new BMenu("New");
+	BMenu* newSubMenu = new BMenu("New");
 	applicationMenu->AddItem(newSubMenu);
-		menuItem = new BMenuItem("Blitz Game" B_UTF8_ELLIPSIS, NULL, 'B');
-		newSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		menuItem = new BMenuItem("Long Game" B_UTF8_ELLIPSIS, NULL, 'L');
-		newSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		newSubMenu->AddSeparatorItem();
-		menuItem = new BMenuItem("Position Setup" B_UTF8_ELLIPSIS, NULL, 'P');
-		newSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		menuItem = new BMenuItem("Engine Match" B_UTF8_ELLIPSIS, NULL, 'E');
-		newSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		BMenu*  openSubMenu = new BMenu("Open");
-		applicationMenu->AddItem(openSubMenu);
-		menuItem = new BMenuItem("PGN File" B_UTF8_ELLIPSIS, NULL, 'O');
-		openSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		menuItem = new BMenuItem("Database" B_UTF8_ELLIPSIS, NULL, 'D');
-		openSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
+	menuItem = new BMenuItem("Blitz Game" B_UTF8_ELLIPSIS, NULL, 'B');
+	newSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	menuItem = new BMenuItem("Long Game" B_UTF8_ELLIPSIS, NULL, 'L');
+	newSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	newSubMenu->AddSeparatorItem();
+	menuItem = new BMenuItem("Position Setup" B_UTF8_ELLIPSIS, NULL, 'P');
+	newSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	menuItem = new BMenuItem("Engine Match" B_UTF8_ELLIPSIS, NULL, 'E');
+	newSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	BMenu* openSubMenu = new BMenu("Open");
+	applicationMenu->AddItem(openSubMenu);
+	menuItem = new BMenuItem("PGN File" B_UTF8_ELLIPSIS, NULL, 'O');
+	openSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	menuItem = new BMenuItem("Database" B_UTF8_ELLIPSIS, NULL, 'D');
+	openSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
 
 	applicationMenu->AddSeparatorItem();
 	menuItem = new BMenuItem("Save" B_UTF8_ELLIPSIS, NULL, 'S');
@@ -897,7 +900,7 @@ BoardWindow::_CreateMenuBar(void)
 	menuItem = new BMenuItem("Quit", new BMessage(MENU_APP_QUIT), 'Q');
 	applicationMenu->AddItem(menuItem);
 
-	BMenu*	editMenu = new BMenu("Edit");
+	BMenu* editMenu = new BMenu("Edit");
 	menuBar->AddItem(editMenu);
 
 	menuItem = new BMenuItem("Copy Position", NULL, 'C');
@@ -912,7 +915,7 @@ BoardWindow::_CreateMenuBar(void)
 	editMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 
-	BMenu*	viewMenu = new BMenu("View");
+	BMenu* viewMenu = new BMenu("View");
 	menuBar->AddItem(viewMenu);
 	fFlipBoardMI = new BMenuItem("Flip Board", new BMessage(MENU_VIEW_FLIPBOARD));
 	viewMenu->AddItem(fFlipBoardMI);
@@ -920,56 +923,47 @@ BoardWindow::_CreateMenuBar(void)
 	fFlipBoardMI->SetMarked(false);
 
 	viewMenu->AddSeparatorItem();
-	fMinIfMenuItem = new BMenuItem("Minimal Interface",
-		new BMessage(MENU_VIEW_MININTERFACE), '1');
+	fMinIfMenuItem = new BMenuItem("Minimal Interface", new BMessage(MENU_VIEW_MININTERFACE), '1');
 	f3DMI = new BMenuItem("3D", new BMessage(MENU_VIEW_3D));
 	viewMenu->AddItem(f3DMI);
 	f3DMI->SetShortcut('3', B_COMMAND_KEY);
 	f3DMI->SetMarked(false);
 
-	fFullScrMI = new BMenuItem("Fullscreen",
-		new BMessage(MENU_VIEW_FULLSCREEN), 'F');
+	fFullScrMI = new BMenuItem("Fullscreen", new BMessage(MENU_VIEW_FULLSCREEN), 'F');
 	viewMenu->AddItem(fFullScrMI);
 	fFullScrMI->SetMarked(false);
 	fFullScrMI->SetEnabled(true);
 	viewMenu->AddSeparatorItem();
-	fShowClockMenuItem = new BMenuItem("Show Clock",
-		new BMessage(MENU_VIEW_SHOWCLOCK));
+	fShowClockMenuItem = new BMenuItem("Show Clock", new BMessage(MENU_VIEW_SHOWCLOCK));
 	viewMenu->AddItem(fShowClockMenuItem);
 	fShowClockMenuItem->SetShortcut('T', B_COMMAND_KEY);
 	fShowClockMenuItem->SetMarked(true);
-	fShowMBarMenuItem = new BMenuItem("Show Menubar",
-		new BMessage(MENU_VIEW_SHOWMENU));
+	fShowMBarMenuItem = new BMenuItem("Show Menubar", new BMessage(MENU_VIEW_SHOWMENU));
 	viewMenu->AddItem(fShowMBarMenuItem);
 	fShowMBarMenuItem->SetShortcut('M', B_COMMAND_KEY);
 	fShowMBarMenuItem->SetMarked(true);
-	fSidebarMenuItem = new BMenuItem("Show Sidebar",
-		new BMessage(MENU_VIEW_SIDEBAR));
+	fSidebarMenuItem = new BMenuItem("Show Sidebar", new BMessage(MENU_VIEW_SIDEBAR));
 	viewMenu->AddItem(fSidebarMenuItem);
 	fSidebarMenuItem->SetShortcut('4', B_COMMAND_KEY);
 	fSidebarMenuItem->SetMarked(true);
-	fShowborderMenuItem = new BMenuItem("Show Window Frame",
-		new BMessage(MENU_VIEW_SHOWBORDER));
+	fShowborderMenuItem = new BMenuItem("Show Window Frame", new BMessage(MENU_VIEW_SHOWBORDER));
 	viewMenu->AddItem(fShowborderMenuItem);
 	fShowborderMenuItem->SetShortcut('Y', B_COMMAND_KEY);
 	fShowborderMenuItem->SetMarked(true);
-	fAutohidingMenuItem = new BMenuItem("Autohiding",
-		new BMessage(MENU_VIEW_AUTOHIDING));
+	fAutohidingMenuItem = new BMenuItem("Autohiding", new BMessage(MENU_VIEW_AUTOHIDING));
 	viewMenu->AddItem(fAutohidingMenuItem);
 	fAutohidingMenuItem->SetShortcut('X', B_COMMAND_KEY);
 	fAutohidingMenuItem->SetMarked(false);
 	viewMenu->AddSeparatorItem();
-	fAlwaysOnTopMenuItem = new BMenuItem("Always on top",
-		new BMessage(MENU_VIEW_ALWAYSONTOP));
+	fAlwaysOnTopMenuItem = new BMenuItem("Always on top", new BMessage(MENU_VIEW_ALWAYSONTOP));
 	viewMenu->AddItem(fAlwaysOnTopMenuItem);
 	fAlwaysOnTopMenuItem->SetShortcut('A', B_COMMAND_KEY);
 	fAlwaysOnTopMenuItem->SetMarked(false);
-	//PostMessage(new BMessage(MENU_VIEW_AUTOHIDING));
+	// PostMessage(new BMessage(MENU_VIEW_AUTOHIDING));
 
-	BMenu*	gameMenu = new BMenu("Game");
+	BMenu* gameMenu = new BMenu("Game");
 	menuBar->AddItem(gameMenu);
-	gameMenu->AddItem(new BMenuItem("New Game",
-		new BMessage(MENU_GAME_NEWGAME), 'N'));
+	gameMenu->AddItem(new BMenuItem("New Game", new BMessage(MENU_GAME_NEWGAME), 'N'));
 	gameMenu->AddSeparatorItem();
 	menuItem = new BMenuItem("Move Now", new BMessage(MENU_GAME_MOVENOW), ' ');
 	gameMenu->AddItem(menuItem);
@@ -978,15 +972,15 @@ BoardWindow::_CreateMenuBar(void)
 	gameMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 	gameMenu->AddSeparatorItem();
-		BMenu*  levelsSubMenu = new BMenu("Levels");
-		levelsSubMenu->SetRadioMode(true);
-		gameMenu->AddItem(levelsSubMenu);
-		menuItem = new BMenuItem("Fixed depth" B_UTF8_ELLIPSIS, NULL);
-		levelsSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
-		menuItem = new BMenuItem("Fixed time" B_UTF8_ELLIPSIS, NULL);
-		levelsSubMenu->AddItem(menuItem);
-		menuItem->SetEnabled(false);
+	BMenu* levelsSubMenu = new BMenu("Levels");
+	levelsSubMenu->SetRadioMode(true);
+	gameMenu->AddItem(levelsSubMenu);
+	menuItem = new BMenuItem("Fixed depth" B_UTF8_ELLIPSIS, NULL);
+	levelsSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
+	menuItem = new BMenuItem("Fixed time" B_UTF8_ELLIPSIS, NULL);
+	levelsSubMenu->AddItem(menuItem);
+	menuItem->SetEnabled(false);
 	gameMenu->AddSeparatorItem();
 	fPauseMenuItem = new BMenuItem("Pause", NULL);
 	gameMenu->AddItem(fPauseMenuItem);
@@ -998,13 +992,12 @@ BoardWindow::_CreateMenuBar(void)
 	gameMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 
-	BMenu*	engineMenu = new BMenu("Engine");
+	BMenu* engineMenu = new BMenu("Engine");
 	menuBar->AddItem(engineMenu);
 	menuItem = new BMenuItem("Change Engine" B_UTF8_ELLIPSIS, NULL);
 	engineMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
-	fEngineOffMenuItem = new BMenuItem("Switch off Engine",
-		new BMessage(MENU_ENGINE_SOENGINE));
+	fEngineOffMenuItem = new BMenuItem("Switch off Engine", new BMessage(MENU_ENGINE_SOENGINE));
 	engineMenu->AddItem(fEngineOffMenuItem);
 	fEngineOffMenuItem->SetShortcut('P', B_COMMAND_KEY);
 	fEngineOffMenuItem->SetEnabled(true);
@@ -1014,7 +1007,7 @@ BoardWindow::_CreateMenuBar(void)
 	engineMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 
-	BMenu*	toolsMenu = new BMenu("Tools");
+	BMenu* toolsMenu = new BMenu("Tools");
 	menuBar->AddItem(toolsMenu);
 	menuItem = new BMenuItem("User Info" B_UTF8_ELLIPSIS, NULL);
 	toolsMenu->AddItem(menuItem);
@@ -1028,33 +1021,28 @@ BoardWindow::_CreateMenuBar(void)
 	toolsMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 
-	//BMenu*  serverMenu = new BMenu("Server");
-	//menuBar->AddItem(serverMenu);
-	fICSConnectMI = new BMenuItem("Connect" B_UTF8_ELLIPSIS,
-		new BMessage(MENU_SERVER_CONNECT));
-   // serverMenu->AddItem(fICSConnectMI);
-   // fICSConnectMI->SetShortcut('S', B_CONTROL_KEY);
+	// BMenu*  serverMenu = new BMenu("Server");
+	// menuBar->AddItem(serverMenu);
+	fICSConnectMI = new BMenuItem("Connect" B_UTF8_ELLIPSIS, new BMessage(MENU_SERVER_CONNECT));
+	// serverMenu->AddItem(fICSConnectMI);
+	// fICSConnectMI->SetShortcut('S', B_CONTROL_KEY);
 
-	BMenu*	helpMenu = new BMenu("Help");
+	BMenu* helpMenu = new BMenu("Help");
 	menuBar->AddItem(helpMenu);
 
-	fMoveAssistantMenuItem = new BMenuItem("Move Assistant",
-		new BMessage(MENU_HELP_MOVEASSISTANT));
+	fMoveAssistantMenuItem = new BMenuItem("Move Assistant", new BMessage(MENU_HELP_MOVEASSISTANT));
 	helpMenu->AddItem(fMoveAssistantMenuItem);
 	fMoveAssistantMenuItem->SetShortcut('J', B_COMMAND_KEY);
 	fMoveAssistantMenuItem->SetMarked(false);
-	menuItem = new BMenuItem("Hint" B_UTF8_ELLIPSIS,
-		new BMessage(MENU_HELP_HINT), 'H');
+	menuItem = new BMenuItem("Hint" B_UTF8_ELLIPSIS, new BMessage(MENU_HELP_HINT), 'H');
 	helpMenu->AddItem(menuItem);
 	menuItem->SetEnabled(false);
 	helpMenu->AddSeparatorItem();
-	menuItem = new BMenuItem("Help" B_UTF8_ELLIPSIS,
-		new BMessage(MENU_HELP_HELP));
+	menuItem = new BMenuItem("Help" B_UTF8_ELLIPSIS, new BMessage(MENU_HELP_HELP));
 	helpMenu->AddItem(menuItem);
 	menuItem->SetEnabled(true);
 	helpMenu->AddSeparatorItem();
-	menuItem = new BMenuItem("About Puri" B_UTF8_ELLIPSIS,
-		new BMessage(MENU_HELP_ABOUT));
+	menuItem = new BMenuItem("About Puri" B_UTF8_ELLIPSIS, new BMessage(MENU_HELP_ABOUT));
 	helpMenu->AddItem(menuItem);
 
 	return menuBar;
@@ -1073,8 +1061,7 @@ BoardWindow::_EngineGo(void)
 	BString str = "position startpos moves";
 
 	str << fChessBoard->MovesEF() << "\n";
-	str << "go wtime " << fTimeView->WTime()
-		<< " btime " << fTimeView->BTime();
+	str << "go wtime " << fTimeView->WTime() << " btime " << fTimeView->BTime();
 
 	BMessage msg(MSG_ENG_MOVENOW);
 	msg.AddString("moves", str);
@@ -1095,24 +1082,20 @@ void
 BoardWindow::_SaveSettings(void)
 {
 	Settings settings("BoardWindow");
-	settings
-		<< "Split10"        << fSplitView->ItemWeight((int32)0)
-		<< "Split11"        << fSplitView->ItemWeight((int32)1)
-		<< "Split20"        << fMaterialSV->ItemWeight((int32)0)
-		<< "Split21"        << fMaterialSV->ItemWeight((int32)1)
-		<< "Split22"        << fMaterialSV->ItemWeight((int32)2)
-		<< "EngineSkill"    << fSkillSlider->Value()
-		<< "EngineOff"      << (int32)fEngineOffMenuItem->IsMarked()
-		<< "3DView"         << (int32)f3DMI->IsMarked()
-		<< "FlipBoard"      << (int32)fFlipBoardMI->IsMarked()
-		<< "Sidebar"        << (int32)fSidebarMenuItem->IsMarked()
-		<< "Autohiding"     << (int32)fAutohidingMenuItem->IsMarked()
-		<< "ShowClock"      << (int32)fShowClockMenuItem->IsMarked()
-		<< "ShowMBar"       << (int32)fShowMBarMenuItem->IsMarked()
-		<< "ShowBorder"     << (int32)fShowborderMenuItem->IsMarked()
-		<< "MoveAssistant"  << (int32)fMoveAssistantMenuItem->IsMarked()
-		<< "AlwaysOnTop"    << (int32)fAlwaysOnTopMenuItem->IsMarked()
-		<< "Fullscreen"     << (int32)fFullScrMI->IsMarked();
+	settings << "Split10" << fSplitView->ItemWeight((int32)0) << "Split11"
+			 << fSplitView->ItemWeight((int32)1) << "Split20" << fMaterialSV->ItemWeight((int32)0)
+			 << "Split21" << fMaterialSV->ItemWeight((int32)1) << "Split22"
+			 << fMaterialSV->ItemWeight((int32)2) << "EngineSkill" << fSkillSlider->Value()
+			 << "EngineOff" << (int32)fEngineOffMenuItem->IsMarked() << "3DView"
+			 << (int32)f3DMI->IsMarked() << "FlipBoard" << (int32)fFlipBoardMI->IsMarked()
+			 << "Sidebar" << (int32)fSidebarMenuItem->IsMarked() << "Autohiding"
+			 << (int32)fAutohidingMenuItem->IsMarked() << "ShowClock"
+			 << (int32)fShowClockMenuItem->IsMarked() << "ShowMBar"
+			 << (int32)fShowMBarMenuItem->IsMarked() << "ShowBorder"
+			 << (int32)fShowborderMenuItem->IsMarked() << "MoveAssistant"
+			 << (int32)fMoveAssistantMenuItem->IsMarked() << "AlwaysOnTop"
+			 << (int32)fAlwaysOnTopMenuItem->IsMarked() << "Fullscreen"
+			 << (int32)fFullScrMI->IsMarked();
 
 	if (fFullScrMI->IsMarked())
 		settings << fSavedFrame;
@@ -1143,25 +1126,25 @@ BoardWindow::_LoadSettings()
 	fSplitView->SetItemWeight(0, weight, true);
 	if (weight == 0)
 		fSplitView->SetItemCollapsed(0, false);
-		
+
 	weight = 1.0;
 	settings << "Split11" >> weight;
 	fSplitView->SetItemWeight(1, weight, true);
 	if (weight == 0)
 		fSplitView->SetItemCollapsed(1, false);
-		
+
 	weight = 20.0;
 	settings << "Split20" >> weight;
 	fMaterialSV->SetItemWeight(0, weight, true);
 	if (weight == 0)
 		fMaterialSV->SetItemCollapsed(0, false);
-		
+
 	weight = 3.0;
 	settings << "Split21" >> weight;
 	fMaterialSV->SetItemWeight(1, weight, true);
 	if (weight == 0)
 		fMaterialSV->SetItemCollapsed(1, false);
-		
+
 	weight = 3.0;
 	settings << "Split22" >> weight;
 	fMaterialSV->SetItemWeight(2, weight, true);

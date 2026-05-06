@@ -16,14 +16,14 @@
 #include "Messages.h"
 
 ICSTabsToolBar::ICSTabsToolBar(void)
-	:
-	BGroupView("icstabstoolbar", B_HORIZONTAL, 0),
-	fAutohiding(false)
+	: BGroupView("icstabstoolbar", B_HORIZONTAL, 0),
+	  fAutohiding(false)
 {
+	// clang-format off
 	// Home Tab
 	BGroupLayout* homeLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
 		.AddGlue(0)
-//        .Add(new ImageButton("star_green", NULL, 0.3))
+//		.Add(new ImageButton("star_green", NULL, 0.3))
 		.AddGlue(0)
 		.RootLayout()
 	;
@@ -31,7 +31,7 @@ ICSTabsToolBar::ICSTabsToolBar(void)
 	// Account Tab
 	BGroupLayout* accoutLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
 		.AddGlue(0)
-  //      .Add(new ImageButton("star_green", NULL, 0.3))
+  //	  .Add(new ImageButton("star_green", NULL, 0.3))
 		.AddGlue(0)
 		.RootLayout()
 	;
@@ -39,7 +39,7 @@ ICSTabsToolBar::ICSTabsToolBar(void)
 	// Home Tab
 	BGroupLayout* communityLayout = BGroupLayoutBuilder(B_VERTICAL, 0)
 		.AddGlue(0)
-	//    .Add(new ImageButton("star_green", NULL, 0.3))
+	//	.Add(new ImageButton("star_green", NULL, 0.3))
 		.AddGlue(0)
 		.RootLayout()
 	;
@@ -51,6 +51,7 @@ ICSTabsToolBar::ICSTabsToolBar(void)
 		.AddGlue(0)
 		.RootLayout()
 	;
+	// clang-format on
 
 	fTabView = new BTabView("tab_view");
 	fTabView->SetTabWidth(B_WIDTH_FROM_LABEL);
@@ -67,9 +68,7 @@ ICSTabsToolBar::ICSTabsToolBar(void)
 	fTabView->AddTab(viewLayout->View(), fTabsVec.back());
 	fTabsVec.back()->SetLabel("View");
 
-	BLayoutBuilder::Group<>(this)
-		.Add(fTabView)
-	;
+	BLayoutBuilder::Group<>(this).Add(fTabView);
 }
 
 
@@ -79,7 +78,7 @@ ICSTabsToolBar::AttachedToWindow(void)
 	int size = fTabView->CountTabs();
 
 	for (int i = 0; i < size; ++i)
-		fTabView->ViewForTab(i)->SetViewColor(220,220,255,255);
+		fTabView->ViewForTab(i)->SetViewColor(220, 220, 255, 255);
 
 	BGroupView::AttachedToWindow();
 }
@@ -89,7 +88,7 @@ ICSTabsToolBar::MouseMoved(BPoint where, uint32 code, const BMessage* dragMessag
 {
 	switch (code) {
 		case B_EXITED_VIEW:
-		//	fMainGroup->SetVisible(false);
+			//	fMainGroup->SetVisible(false);
 			break;
 
 		case B_ENTERED_VIEW:
@@ -102,7 +101,6 @@ ICSTabsToolBar::MouseMoved(BPoint where, uint32 code, const BMessage* dragMessag
 		default:
 			break;
 	}
-
 }
 
 

@@ -11,9 +11,9 @@
 
 #include <vector>
 
-#include <InterfaceKit.h>
 #include <CardLayout.h>
 #include <GroupLayout.h>
+#include <InterfaceKit.h>
 #include <SplitView.h>
 
 #include "ICS.h"
@@ -27,79 +27,75 @@
 #include "ICSOutboxView.h"
 #include "ICSPlayersView.h"
 #include "ICSRoomsView.h"
-#include "ICSTabsToolBar.h"
 #include "ICSTXTControl.h"
+#include "ICSTabsToolBar.h"
 #include "ImageButton.h"
 
 #include "Debug.h"
 
-class ICSMainWindow : public BWindow
-{
+class ICSMainWindow : public BWindow {
 public:
-                    ICSMainWindow(ICSInfo info);
-    virtual void    MessageReceived(BMessage* message);
-    virtual bool    QuitRequested(void);
+	ICSMainWindow(ICSInfo info);
+	virtual void MessageReceived(BMessage* message);
+	virtual bool QuitRequested(void);
 
 private:
-            void    _PStr(BString str, int code, BHandler* target);
-            void    _PStr(BString str, int code, BLooper*  target);
-            bool    _ParseBlock(const char*& p);
-            bool    _ParseAngleBracket(const char*& p);
-            bool    _ParseSquareBracket(const char*& p);
-            bool    _ParseCurlyBracket(const char*& p);
-            void    _ParseICSOutput(BString & str);
-            void    _SetIcsVariables(void);
-            void    _LoadSettings(void);
-            void    _SaveSettings(void);
-    inline  void    _Send(BString const& str)
-    {
-        fICS->Send(str);
-    }
+	void _PStr(BString str, int code, BHandler* target);
+	void _PStr(BString str, int code, BLooper* target);
+	bool _ParseBlock(const char*& p);
+	bool _ParseAngleBracket(const char*& p);
+	bool _ParseSquareBracket(const char*& p);
+	bool _ParseCurlyBracket(const char*& p);
+	void _ParseICSOutput(BString& str);
+	void _SetIcsVariables(void);
+	void _LoadSettings(void);
+	void _SaveSettings(void);
+	inline void _Send(BString const& str) { fICS->Send(str); }
 
-    BCardLayout*            fCardLayout;
-    BGroupLayout*           fMainLayout;
+	BCardLayout* fCardLayout;
+	BGroupLayout* fMainLayout;
 
-    BTabView*               fTabView1;
-    BTabView*               fTabView2;
-    BTabView*               fTabView3;
+	BTabView* fTabView1;
+	BTabView* fTabView2;
+	BTabView* fTabView3;
 
-    std::vector<BTab*>      fTabsVec1;
-    std::vector<BTab*>      fTabsVec2;
-    std::vector<BTab*>      fTabsVec3;
+	std::vector<BTab*> fTabsVec1;
+	std::vector<BTab*> fTabsVec2;
+	std::vector<BTab*> fTabsVec3;
 
-    BWindow*                 fTarget;
+	BWindow* fTarget;
 
-    BSplitView*             fSplitView1;
-    BSplitView*             fSplitView2;
-    BSplitView*             fSplitView3;
-    BSplitView*             fSplitView4;
+	BSplitView* fSplitView1;
+	BSplitView* fSplitView2;
+	BSplitView* fSplitView3;
+	BSplitView* fSplitView4;
 
-    ICS*                    fICS;
-    ICSInfo                 fICSInfo;
+	ICS* fICS;
+	ICSInfo fICSInfo;
 
-    ICSTabsToolBar*         fToolBar;
+	ICSTabsToolBar* fToolBar;
 
-    ICSInfoView*            fICSInfoView;
-    ICSPlayersView*         fICSPlayersView;
-    ICSGamesView*           fICSGamesView;
-    ICSTXTControl*          fICSTXTControl;
+	ICSInfoView* fICSInfoView;
+	ICSPlayersView* fICSPlayersView;
+	ICSGamesView* fICSGamesView;
+	ICSTXTControl* fICSTXTControl;
 
-    ICSChatView*            fICSChatView;
-    ICSChannelsView*        fICSChannelsView;
-    ICSInboxView*           fICSInboxView;
-    ICSOutboxView*          fICSOutboxView;
-    ICSChatView*            fICSPrvChatView;
+	ICSChatView* fICSChatView;
+	ICSChannelsView* fICSChannelsView;
+	ICSInboxView* fICSInboxView;
+	ICSOutboxView* fICSOutboxView;
+	ICSChatView* fICSPrvChatView;
 
-    ICSRoomsView*           fICSRoomsView;
+	ICSRoomsView* fICSRoomsView;
 
-    ICSChallengesView*      fICSChallengesView;
-    ICSEventCalendarView*   fICSEventCalendarView;
+	ICSChallengesView* fICSChallengesView;
+	ICSEventCalendarView* fICSEventCalendarView;
 
-    bool                    fIsConnected;
+	bool fIsConnected;
 
-    BString                 fParseRest;
+	BString fParseRest;
 
-    Debug                   out;
+	Debug out;
 };
 
 

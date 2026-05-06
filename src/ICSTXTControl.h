@@ -15,32 +15,33 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "Debug.h"
 
-class ICSTXTControl : public BGroupView
-{
+class ICSTXTControl : public BGroupView {
 public:
-                    ICSTXTControl(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
-    void            AddTxt(BString const& str);
+	ICSTXTControl(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
+	void AddTxt(BString const& str);
 
-    enum{ M_SEND_BUTTON = 'isb1' };
+	enum {
+		M_SEND_BUTTON = 'isb1'
+	};
+
 private:
-    BScrollBar*     fScrollBar;
-    BTextView*      fTxtView;
-    BTextControl*   fTxtControl;
+	BScrollBar* fScrollBar;
+	BTextView* fTxtView;
+	BTextControl* fTxtControl;
 
-    BButton*        fSendButton;
-    bool            fIsFocus;
+	BButton* fSendButton;
+	bool fIsFocus;
 
-    BLocker         fLocker;
-    Debug           out;
-
+	BLocker fLocker;
+	Debug out;
 };
 
 
-#endif // ICSTXTCONTROL_H
+#endif	// ICSTXTCONTROL_H

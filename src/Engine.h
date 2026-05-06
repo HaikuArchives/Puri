@@ -11,68 +11,68 @@
 
 #include <Looper.h>
 #include <Message.h>
-#include <String.h>
 #include <OS.h>
+#include <String.h>
 
 #include "Debug.h"
 #include "Messages.h"
 
-class Engine : public BLooper
-{
+class Engine : public BLooper {
 public:
-                    Engine(BString name, uint32 replyCode = 0,
-                            BLooper* targetLooper = NULL,
-                            BHandler* targetHandler = NULL,
-                            int32 priority = B_NORMAL_PRIORITY);
+	Engine(BString name, uint32 replyCode = 0, BLooper* targetLooper = NULL,
+		BHandler* targetHandler = NULL, int32 priority = B_NORMAL_PRIORITY);
 
-	virtual void    MessageReceived(BMessage* message);
-    virtual bool    QuitRequested(void);
-	void 	        Send(BString str);
-	bool        	IsRunning(void) {	return fIsRunning; }
+	virtual void MessageReceived(BMessage* message);
+	virtual bool QuitRequested(void);
+	void Send(BString str);
+	bool IsRunning(void) { return fIsRunning; }
 
-    enum {FIXEDDEPTH = 0, FIXEDTIME};
-
-private:
-	static void*    _ReadThread(void* arg);
-
-	void	        _InitEngineCommunication(void);
-
-	//status_t	_ReadThread( void* arg );
-
-	class ThreadData{
-		public:
-		int outpipe;
-		uint32		replyCode;
-		BLooper*	target_looper;
-		BHandler*	target_handler;
+	enum {
+		FIXEDDEPTH = 0,
+		FIXEDTIME
 	};
 
-	int		    fInPipe[2];
-	int	    	fOutPipe[2];
-	int		    fPidEngine;
+private:
+	static void* _ReadThread(void* arg);
 
-	pthread_t	fReadThread;
+	void _InitEngineCommunication(void);
 
-	BString		fEnginePath;
-	BString		fEngineName;
+	// status_t	_ReadThread( void* arg );
 
-	BLooper*	fTargetLooper;
-	BHandler*	fTargetHandler;
+	class ThreadData {
+	public:
+		int outpipe;
+		uint32 replyCode;
+		BLooper* target_looper;
+		BHandler* target_handler;
+	};
 
-	bool		fIsRunning;
-    bool        fIsStarted;
-    bool        fIsLocked;
+	int fInPipe[2];
+	int fOutPipe[2];
+	int fPidEngine;
 
-	uint32		fReplyCode;
+	pthread_t fReadThread;
+
+	BString fEnginePath;
+	BString fEngineName;
+
+	BLooper* fTargetLooper;
+	BHandler* fTargetHandler;
+
+	bool fIsRunning;
+	bool fIsStarted;
+	bool fIsLocked;
+
+	uint32 fReplyCode;
 
 
-    BString     fGoMsg;
+	BString fGoMsg;
 
-    uint        fGoDepth;
-    uint        fGoTime;
+	uint fGoDepth;
+	uint fGoTime;
 
 
-    Debug       out;
+	Debug out;
 };
 
 #endif

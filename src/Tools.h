@@ -7,10 +7,10 @@
  *
  */
 #ifndef TOOLS_H
-#define	TOOLS_H
+#define TOOLS_H
 
-#include <memory>
 #include <fstream>
+#include <memory>
 #include <vector>
 
 #include <Bitmap.h>
@@ -29,41 +29,37 @@
 
 class Tools {
 public:
-	static BString
-	AppPath(void)
+	static BString AppPath(void)
 	{
-		app_info	info;
+		app_info info;
 		be_app->GetAppInfo(&info);
-	
+
 		BPath path = BPath(&info.ref);
 		path.GetParent(&path);
-	
+
 		return path.Path();
 	}
-	
-	
-	static BString
-	AppName(void)
+
+
+	static BString AppName(void)
 	{
-		app_info	info;
+		app_info info;
 		be_app->GetAppInfo(&info);
 
 		BPath path = BPath(&info.ref);
 
 		return path.Leaf();
 	}
-	
-	static bool
-	FileExists(const BString & fileName)
+
+	static bool FileExists(const BString& fileName)
 	{
 		std::ifstream infile;
 		infile.open(fileName.String());
-		return	infile.is_open();
+		return infile.is_open();
 	}
-	
-	
-	static BString
-	SettingsPath(void)
+
+
+	static BString SettingsPath(void)
 	{
 		BPath path;
 		if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK)
@@ -76,10 +72,10 @@ public:
 		str.Append("/");
 		return str;
 	}
-	
-	
-	static std::vector<BString>
-	Split(BString str, const char token = ' ', BString start = "", BString stop = "")
+
+
+	static std::vector<BString> Split(
+		BString str, const char token = ' ', BString start = "", BString stop = "")
 	{
 		std::vector<BString> vec;
 
@@ -101,7 +97,7 @@ public:
 
 		for (; n < n2; ++n)
 			if (str[n] == token) {
-				if (n > 0 && str[n-1] != token) {
+				if (n > 0 && str[n - 1] != token) {
 					char temp[n - n1 + 1];
 					str.CopyInto(temp, n1, n - n1);
 					temp[n - n1] = '\0';
@@ -112,7 +108,7 @@ public:
 				}
 			}
 
-		char temp[n - n1 + 1] ;
+		char temp[n - n1 + 1];
 		str.CopyInto(temp, n1, n - n1);
 		temp[n - n1] = '\0';
 		vec.push_back(temp);
@@ -120,9 +116,8 @@ public:
 	}
 
 
-	static std::vector<BString>
-	Split(unsigned int length, BString str,
-		const char token = ' ', BString start = "", BString stop = "")
+	static std::vector<BString> Split(unsigned int length, BString str, const char token = ' ',
+		BString start = "", BString stop = "")
 	{
 		std::vector<BString> vec;
 
@@ -146,7 +141,7 @@ public:
 
 		for (; n < n2; ++n)
 			if (str[n] == token) {
-				if (n > 0 && str[n-1] != token) {
+				if (n > 0 && str[n - 1] != token) {
 					char temp[n - n1 + 1];
 					str.CopyInto(temp, n1, n - n1);
 					temp[n - n1] = '\0';
@@ -160,7 +155,7 @@ public:
 				}
 			}
 
-		char temp[n - n1 + 1] ;
+		char temp[n - n1 + 1];
 		str.CopyInto(temp, n1, n - n1);
 		temp[n - n1] = '\0';
 		vec.push_back(temp);
@@ -170,17 +165,16 @@ public:
 	}
 
 
-	static BString
-	Find(BString str, BString searchStr)
+	static BString Find(BString str, BString searchStr)
 	{
 		BString result = "";
-	
+
 		if (str.Length() == 0 || searchStr.Length() == 0)
 			return result;
 
 		int n1 = str.FindFirst(searchStr) + searchStr.Length();
 		int n2 = str.FindFirst(" ", n1);
-	
+
 		if (n2 == B_ERROR)
 			n2 = str.Length();
 
@@ -190,104 +184,100 @@ public:
 	}
 
 
-	static BBitmap*
-	LoadBitmap(BString const& imageName, int size)
+	static BBitmap* LoadBitmap(BString const& imageName, int size)
 	{
 		BResources* res = be_app->AppResources();
-	
+
 		if (res == nullptr)
 			return nullptr;
-	
+
 		size_t nbytes = 0;
 		color_space cspace = B_RGBA32;
-	
+
 		const void* data = res->LoadResource('HVIF', imageName.String(), &nbytes);
-	
-	   // size--;
-	
+
+		// size--;
+
 		BBitmap* bitmap = new BBitmap(BRect(0, 0, size, size), cspace);
-	
+
 		if (bitmap->InitCheck() != B_OK) {
 			delete bitmap;
 			bitmap = nullptr;
-		} else if (BIconUtils::GetVectorIcon((const uint8*)data, nbytes, bitmap)
-					 != B_OK) {
+		} else if (BIconUtils::GetVectorIcon((const uint8*)data, nbytes, bitmap) != B_OK) {
 			delete bitmap;
 			bitmap = nullptr;
 		}
-	
+
 		res->RemoveResource(data);
 		return bitmap;
 	}
 
 
-	static void
-	ExportBitmap(BBitmap* bitmap,
-		BString const& path, int32 const& format = B_PNG_FORMAT)
+	static void ExportBitmap(
+		BBitmap* bitmap, BString const& path, int32 const& format = B_PNG_FORMAT)
 	{
 		BBitmapStream stream(bitmap);
 		BFile imageFile(path, B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
-		BTranslatorRoster *roster = BTranslatorRoster::Default();
+		BTranslatorRoster* roster = BTranslatorRoster::Default();
 		roster->Translate(&stream, NULL, NULL, &imageFile, B_PNG_FORMAT);
 		BBitmap* bmp;
 		stream.DetachBitmap(&bmp);
 	}
-	
 
-	static std::unique_ptr<BBitmap>
-	RescaleBitmap(std::unique_ptr<BBitmap> src, int32 width, int32 height)
+
+	static std::unique_ptr<BBitmap> RescaleBitmap(
+		std::unique_ptr<BBitmap> src, int32 width, int32 height)
 	{
 		if (src == nullptr || src->IsValid() == false)
 			throw "Tools::RescaleBitmap";
-			
+
 		if (height <= 0) {
 			if (width <= 0)
 				return src;
-		
-			height = (width * src->Bounds().Height()) / src->Bounds().Width();		
+
+			height = (width * src->Bounds().Height()) / src->Bounds().Width();
 		} else if (width <= 0) {
 			if (height <= 0)
 				return src;
-			
+
 			width = (height * src->Bounds().Width()) / src->Bounds().Height();
 		}
-	
+
 		BRect srcSize = src->Bounds();
-		
+
 		if (height < 0) {
-			float srcProp = srcSize.Height()/srcSize.Width();
+			float srcProp = srcSize.Height() / srcSize.Width();
 			height = (int32)(width * ceil(srcProp));
 		}
-		
-		BBitmap* res = new BBitmap(BRect(0, 0, (float)width, (float)height),
-			src->ColorSpace());
-	
-		float dx = (srcSize.Width() + 1)/(float)(width + 1);
-		float dy = (srcSize.Height() + 1)/(float)(height + 1);
-		uint8 bpp = (uint8)(src->BytesPerRow()/ceil(srcSize.Width()));
-	
+
+		BBitmap* res = new BBitmap(BRect(0, 0, (float)width, (float)height), src->ColorSpace());
+
+		float dx = (srcSize.Width() + 1) / (float)(width + 1);
+		float dy = (srcSize.Height() + 1) / (float)(height + 1);
+		uint8 bpp = (uint8)(src->BytesPerRow() / ceil(srcSize.Width()));
+
 		int srcYOff = src->BytesPerRow();
 		int dstYOff = res->BytesPerRow();
-	
+
 		void* dstData = res->Bits();
 		void* srcData = src->Bits();
-	
+
 		for (int32 y = 0; y <= height; y++) {
 			void* dstRow = (void*)((addr_t)dstData + (addr_t)(y * dstYOff));
 			void* srcRow = (void*)((addr_t)srcData + ((addr_t)(y * dy) * srcYOff));
-	
+
 			for (int32 x = 0; x <= width; x++)
-				memcpy((void*)((addr_t)dstRow + (x * bpp)), (void*)((addr_t)srcRow
-												  + ((addr_t)(x * dx) * bpp)), bpp);
+				memcpy((void*)((addr_t)dstRow + (x * bpp)),
+					(void*)((addr_t)srcRow + ((addr_t)(x * dx) * bpp)), bpp);
 		}
-		
+
 		std::unique_ptr<BBitmap> bitmap(res);
 		return bitmap;
-	}	
+	}
 
-	
+
 private:
-			Tools(void);	
+	Tools(void);
 };
 
 #endif

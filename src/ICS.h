@@ -11,70 +11,69 @@
 
 #include <Looper.h>
 #include <Message.h>
-#include <String.h>
 #include <OS.h>
+#include <String.h>
 
 #include "Debug.h"
 #include "Messages.h"
 
 
-class ICSInfo
-{
+class ICSInfo {
 public:
-    BString     server;
-    int32       port;
-    BString     user;
-    BString     pass;
+	BString server;
+	int32 port;
+	BString user;
+	BString pass;
 };
 
 
-class ICS : public BLooper
-{
+class ICS : public BLooper {
 public:
-                    ICS(ICSInfo const& info, uint32 replyCode = 0,
-                            BLooper* targetLooper = NULL,
-                            BHandler* targetHandler = NULL,
-                            int32 priority = B_NORMAL_PRIORITY);
+	ICS(ICSInfo const& info, uint32 replyCode = 0, BLooper* targetLooper = NULL,
+		BHandler* targetHandler = NULL, int32 priority = B_NORMAL_PRIORITY);
 
-	virtual void    MessageReceived(BMessage* message);
-	virtual void    Quit(void);
-    void 	        Send(BString str);
-	bool        	IsRunning(void) {	return fIsRunning; }
+	virtual void MessageReceived(BMessage* message);
+	virtual void Quit(void);
+	void Send(BString str);
+	bool IsRunning(void) { return fIsRunning; }
 
-	enum {BUF_SIZE = 65356};
-    enum {M_INIT = 'ii01' };
-
-private:
-
-	static void*    _ReadThread(void* arg);
-
-	void	        _InitCommunication(void);
-    void            _ParseICSOutput(BString str);
-
-	//status_t	_ReadThread( void* arg );
-
-	class ThreadData{
-    public:
-		int         socket_descriptor;
-		BLooper*	target_looper;
-		BHandler*	target_handler;
+	enum {
+		BUF_SIZE = 65356
+	};
+	enum {
+		M_INIT = 'ii01'
 	};
 
-    int         fSocketDescriptor;
+private:
+	static void* _ReadThread(void* arg);
 
-	pthread_t	fReadThread;
+	void _InitCommunication(void);
+	void _ParseICSOutput(BString str);
 
-	BLooper*	fTargetLooper;
-	BHandler*	fTargetHandler;
+	// status_t	_ReadThread( void* arg );
 
-	bool		fIsRunning;
-    bool        fIsStarted;
-    bool        fIsLocked;
-    bool        fUserIsWhite;
+	class ThreadData {
+	public:
+		int socket_descriptor;
+		BLooper* target_looper;
+		BHandler* target_handler;
+	};
 
-    ICSInfo     fICSInfo;
+	int fSocketDescriptor;
 
-    Debug       out;
+	pthread_t fReadThread;
+
+	BLooper* fTargetLooper;
+	BHandler* fTargetHandler;
+
+	bool fIsRunning;
+	bool fIsStarted;
+	bool fIsLocked;
+	bool fUserIsWhite;
+
+	ICSInfo fICSInfo;
+
+	Debug out;
 };
 
 #endif

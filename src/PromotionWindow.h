@@ -14,16 +14,15 @@
 #include "ChessBoardView.h"
 #include "Debug.h"
 
-class PromotionWindow : public BWindow
-{
+class PromotionWindow : public BWindow {
 public:
-                    PromotionWindow(ChessBoardView* target);
-                    ~PromotionWindow();
-    virtual void    MessageReceived(BMessage* message);
+	PromotionWindow(ChessBoardView* target);
+	~PromotionWindow();
+	virtual void MessageReceived(BMessage* message);
 
 private:
-    ChessBoardView*     fTarget;
-    Debug               out;
+	ChessBoardView* fTarget;
+	Debug out;
 };
 
 

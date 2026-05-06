@@ -8,65 +8,64 @@
  */
 #include "ChessBoardView.h"
 
-#include <iostream>
 #include <algorithm>
 #include <array>
+#include <iostream>
 
+#include <GL/glext.h>
 #include <IconUtils.h>
 #include <String.h>
-#include <GL/glext.h>
 #include <TranslationKit.h>
 
 #include "Messages.h"
 #include "ModelPath.h"
-#include "Tools.h"
 #include "PngLoad.h"
 #include "PromotionWindow.h"
+#include "Tools.h"
 
 using namespace std;
 
 ChessBoardView::ChessBoardView(BRect const& frame)
-	:
-	BGLView(frame, "ChessBoardView", B_FOLLOW_ALL_SIDES, B_WILL_DRAW |
-		B_NAVIGABLE, BGL_RGB | BGL_DOUBLE | BGL_DEPTH | BGL_ALPHA),
-	PI(3.14),
-	fDragPiece2dBM(NULL),
-	fBackgroundBM(NULL),
-	fBoard2dBM(NULL),
-	fNullModel(NULL),
-	fNoMove(100, 100),
-	fHCoord2D(fNoMove),
-	fMoveFrom(fNoMove),
-	fIR(0, 0, 0, 0),
-	fOldMousePos(0, 0),
-	fGrabEffect(3, 3),
-	fGrabDiff(0, 0),
-	fMouseButtons(0),
-	fShowValidMoves(false),
-	fBoardIsTurned(false),
-	fUserCanMove(true),
-	fDrawPieces(true),
-	fIsDragging(false),
-	fPlaySound(true),
-	f3DLoaded(false),
-	fIs3D(false)
+	: BGLView(frame, "ChessBoardView", B_FOLLOW_ALL_SIDES, B_WILL_DRAW | B_NAVIGABLE,
+		  BGL_RGB | BGL_DOUBLE | BGL_DEPTH | BGL_ALPHA),
+	  PI(3.14),
+	  fDragPiece2dBM(NULL),
+	  fBackgroundBM(NULL),
+	  fBoard2dBM(NULL),
+	  fNullModel(NULL),
+	  fNoMove(100, 100),
+	  fHCoord2D(fNoMove),
+	  fMoveFrom(fNoMove),
+	  fIR(0, 0, 0, 0),
+	  fOldMousePos(0, 0),
+	  fGrabEffect(3, 3),
+	  fGrabDiff(0, 0),
+	  fMouseButtons(0),
+	  fShowValidMoves(false),
+	  fBoardIsTurned(false),
+	  fUserCanMove(true),
+	  fDrawPieces(true),
+	  fIsDragging(false),
+	  fPlaySound(true),
+	  f3DLoaded(false),
+	  fIs3D(false)
 {
 	SetMouseEventMask(EventMask(), B_LOCK_WINDOW_FOCUS);
 
-	fDefaultCursor  = new BCursor(B_CURSOR_ID_SYSTEM_DEFAULT);
-	fGrabCursor     = new BCursor(B_CURSOR_ID_GRABBING);
+	fDefaultCursor = new BCursor(B_CURSOR_ID_SYSTEM_DEFAULT);
+	fGrabCursor = new BCursor(B_CURSOR_ID_GRABBING);
 
 	fAppPath = Tools::AppPath().Append("/");
 
 	BString tempPath = fAppPath;
-	tempPath<<"data/Sounds/Board/";
+	tempPath << "data/Sounds/Board/";
 
 
-	//BString sounds[6] = {"newgame.ogg", "move.ogg", "castle.ogg",
-	 //                                "capture.ogg", "illegal.ogg", "gong.ogg"};
+	// BString sounds[6] = {"newgame.ogg", "move.ogg", "castle.ogg",
+	//                                 "capture.ogg", "illegal.ogg", "gong.ogg"};
 
-   	array<BString, 6> sounds = {{"newgame.ogg", "move.ogg", "castle.ogg",
-		"capture.ogg", "illegal.ogg", "gong.ogg"}};
+	array<BString, 6> sounds
+		= { { "newgame.ogg", "move.ogg", "castle.ogg", "capture.ogg", "illegal.ogg", "gong.ogg" } };
 
 #if 0
 	for (unsigned int i = 0; i < sounds.size(); ++i) {
@@ -81,36 +80,41 @@ ChessBoardView::ChessBoardView(BRect const& frame)
 #endif
 	if (fPlaySound == false)
 		!out << "NO SOUND" << std::endl;
-   	else
+	else
 		fSound[1]->StartPlaying();
 
 	// init the array with NULL pointers;
-	std::fill(&fBM[0], &fBM[12], static_cast< BBitmap* >(NULL));
-	//TODO: Direct assignment should work, bug of gnu
-	BString imageName[12] = {"wK", "wQ", "wR", "wB", "wN", "wP",
-		"bK", "bQ", "bR", "bB", "bN", "bP"};
+	std::fill(&fBM[0], &fBM[12], static_cast<BBitmap*>(NULL));
+	// TODO: Direct assignment should work, bug of gnu
+	BString imageName[12]
+		= { "wK", "wQ", "wR", "wB", "wN", "wP", "bK", "bQ", "bR", "bB", "bN", "bP" };
 	std::copy(&imageName[0], &imageName[12], &fImageName[0]);
 
-	fWidth	= frame.right - frame.left;
-	fHeight	= frame.bottom - frame.top;
+	fWidth = frame.right - frame.left;
+	fHeight = frame.bottom - frame.top;
 
-	fDistance = 30; fTwist = 0; fElevation = 30; fAzimuth = -15;
-	fLookToX = 0; fLookToY = 0; fLookToZ = 0;
+	fDistance = 30;
+	fTwist = 0;
+	fElevation = 30;
+	fAzimuth = -15;
+	fLookToX = 0;
+	fLookToY = 0;
+	fLookToZ = 0;
 
 	fBoard = new BackBoard();
 
 	for (int i = 0; i < 8; ++i)
-	for (int j = 0; j < 8; ++j)
-		_Board(i, j) = NULL;
+		for (int j = 0; j < 8; ++j)
+			_Board(i, j) = NULL;
 
 	for (int i = 0; i < 12; ++i)
-		f3DPieces[i]= NULL;
+		f3DPieces[i] = NULL;
 
 	fBoardModel = NULL;
 
 
 	SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_OVERLAY);
-  //  NewGame();
+	//  NewGame();
 	SetViewMode3D(fIs3D);
 
 	fBoard2dBM = BTranslationUtils::GetBitmapFile(
@@ -128,11 +132,10 @@ ChessBoardView::_Load3DModels(void)
 	fBoardModel = new Model3DS(Tools::AppPath().Append(BOARD_PATH), true);
 	fBoardModel->EnableTexture(true);
 
-	int mypieces[12]={K_W, Q_W, R_W, B_W, N_W, P_W, K_B, Q_B, R_B, B_B, N_B,
-		P_B};
+	int mypieces[12] = { K_W, Q_W, R_W, B_W, N_W, P_W, K_B, Q_B, R_B, B_B, N_B, P_B };
 
 	for (int i = 0; i < 12; ++i)
-		f3DPieces[i]= new Model3DS(mypieces[i]);
+		f3DPieces[i] = new Model3DS(mypieces[i]);
 
 	f3DLoaded = true;
 }
@@ -145,9 +148,9 @@ ChessBoardView::~ChessBoardView()
 		delete fBM[i];
 	}
 
-	std::vector< BSimpleGameSound* >::const_iterator itr = fSound.begin();
+	std::vector<BSimpleGameSound*>::const_iterator itr = fSound.begin();
 
-	for ( ;itr != fSound.end(); ++itr)
+	for (; itr != fSound.end(); ++itr)
 		delete *itr;
 
 	delete fBoardModel;
@@ -165,15 +168,15 @@ void
 ChessBoardView::AttachedToWindow(void)
 {
 	LockGL();
-		BGLView::AttachedToWindow();
-		_Init();
-		_Reshape(fWidth, fHeight);
+	BGLView::AttachedToWindow();
+	_Init();
+	_Reshape(fWidth, fHeight);
 	UnlockGL();
 }
 
 
 void
-ChessBoardView::AllAttached( void )
+ChessBoardView::AllAttached(void)
 {
 	MakeFocus(true);
 	BGLView::AllAttached();
@@ -185,10 +188,10 @@ ChessBoardView::FrameResized(float newWidth, float newHeight)
 {
 	if (fIs3D) {
 		LockGL();
-			fWidth  = newWidth;
-			fHeight = newHeight;
-			BGLView :: FrameResized( fWidth, fHeight );
-			_Reshape( fWidth, fHeight );
+		fWidth = newWidth;
+		fHeight = newHeight;
+		BGLView ::FrameResized(fWidth, fHeight);
+		_Reshape(fWidth, fHeight);
 		UnlockGL();
 
 		Render();
@@ -199,13 +202,13 @@ ChessBoardView::FrameResized(float newWidth, float newHeight)
 		fIR = BRect(0, 0, width, width);
 
 		if (newHeight < newWidth)
-			fBoard2dOffset = BPoint((newWidth-newHeight)/2, 0.0f);
+			fBoard2dOffset = BPoint((newWidth - newHeight) / 2, 0.0f);
 		else
-			fBoard2dOffset = BPoint(0, (newHeight-newWidth)/2);
+			fBoard2dOffset = BPoint(0, (newHeight - newWidth) / 2);
 
 		_LoadImages();
 		fArrows.clear();
-			//Replace with Recalculation instead of clearing
+		// Replace with Recalculation instead of clearing
 		Render();
 	}
 }
@@ -221,7 +224,7 @@ ChessBoardView::Draw(BRect updateRect)
 
 	if (fIsDragging) {
 		SetDrawingMode(B_OP_COPY);
-		DrawBitmapAsync(fBackgroundBM, BPoint(0,0));
+		DrawBitmapAsync(fBackgroundBM, BPoint(0, 0));
 
 		BPoint pos;
 		GetMouse(&pos, NULL, false);
@@ -229,15 +232,14 @@ ChessBoardView::Draw(BRect updateRect)
 		SetDrawingMode(B_OP_ALPHA);
 
 		if (fHCoord2D != fNoMove) {
-			fIR.OffsetTo(fHCoord2D.x*fIR.Width(), fHCoord2D.y*fIR.Width());
+			fIR.OffsetTo(fHCoord2D.x * fIR.Width(), fHCoord2D.y * fIR.Width());
 			fIR.OffsetBySelf(fBoard2dOffset);
 			SetHighColor(255, 255, 0, 60);
-			FillRect(fIR.OffsetBySelf(1,1));
+			FillRect(fIR.OffsetBySelf(1, 1));
 		}
 
 		DrawBitmapAsync(fDragPiece2dBM, pos);
-	}
-	else {
+	} else {
 		_DrawInView(this, updateRect);
 	}
 
@@ -245,7 +247,7 @@ ChessBoardView::Draw(BRect updateRect)
 }
 
 
-//Todo: in 2D mode don't redraw all screen while dragging a piece.
+// Todo: in 2D mode don't redraw all screen while dragging a piece.
 void
 ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 {
@@ -253,8 +255,7 @@ ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 	view->FillRect(Bounds());
 	fIR.OffsetTo(fBoard2dOffset);
 	BRect boardbounds = BRect(fBoard2dOffset.x, fBoard2dOffset.y,
-								fIR.Width()*8 + fBoard2dOffset.x,
-								fIR.Width()*8 + fBoard2dOffset.y);
+		fIR.Width() * 8 + fBoard2dOffset.x, fIR.Width() * 8 + fBoard2dOffset.y);
 	view->DrawBitmapAsync(fBoard2dBM, boardbounds);
 	view->SetHighColor(0, 0, 0, 255);
 	view->StrokeRect(boardbounds);
@@ -263,11 +264,10 @@ ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 	if (fBoardIsTurned) {
 		if (fShowValidMoves) {
 			view->SetHighColor(0, 255, 0, 30);
-			std::list<Move>::const_iterator itr= fValidMoves.begin();
+			std::list<Move>::const_iterator itr = fValidMoves.begin();
 
-			for ( ; itr != fValidMoves.end(); ++itr) {
-				fIR.OffsetTo( itr->ToX()*fIR.Width() + 1,
-												itr->ToY()*fIR.Width() + 1);
+			for (; itr != fValidMoves.end(); ++itr) {
+				fIR.OffsetTo(itr->ToX() * fIR.Width() + 1, itr->ToY() * fIR.Width() + 1);
 				fIR.OffsetBySelf(fBoard2dOffset);
 				view->FillRect(fIR);
 			}
@@ -275,27 +275,26 @@ ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 
 		fIR.OffsetTo(fBoard2dOffset);
 
-		for (coord.y = 0 ; coord.y < 8; ++coord.y) {
-			fIR.OffsetBySelf(-fIR.Width() ,0);
+		for (coord.y = 0; coord.y < 8; ++coord.y) {
+			fIR.OffsetBySelf(-fIR.Width(), 0);
 
 			for (coord.x = 0; coord.x < 8; ++coord.x) {
-				fIR.OffsetBySelf(fIR.Width() ,0);
+				fIR.OffsetBySelf(fIR.Width(), 0);
 
 				if (coord != fMoveFrom)
 					view->DrawBitmapAsync(_ImageBoard(coord), fIR.LeftTop());
 			}
 
-			fIR.OffsetBySelf(0 ,fIR.Width());
+			fIR.OffsetBySelf(0, fIR.Width());
 			fIR.OffsetTo(fBoard2dOffset.x, fIR.top);
 		}
 	} else {
 		if (fShowValidMoves) {
 			view->SetHighColor(0, 255, 0, 50);
-			std::list<Move>::const_iterator itr= fValidMoves.begin();
+			std::list<Move>::const_iterator itr = fValidMoves.begin();
 
-			for ( ; itr != fValidMoves.end(); ++itr) {
-				fIR.OffsetTo(itr->ToX()*fIR.Width() + 1,
-										 (7 - itr->ToY())*fIR.Width() + 1);
+			for (; itr != fValidMoves.end(); ++itr) {
+				fIR.OffsetTo(itr->ToX() * fIR.Width() + 1, (7 - itr->ToY()) * fIR.Width() + 1);
 				fIR.OffsetBySelf(fBoard2dOffset);
 				view->FillRect(fIR);
 			}
@@ -303,37 +302,37 @@ ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 
 		fIR.OffsetTo(fBoard2dOffset);
 
-		for (coord.y = 7 ; coord.y > -1; --coord.y) {
-			fIR.OffsetBySelf(-fIR.Width() ,0);
+		for (coord.y = 7; coord.y > -1; --coord.y) {
+			fIR.OffsetBySelf(-fIR.Width(), 0);
 
 			for (coord.x = 0; coord.x < 8; ++coord.x) {
-				fIR.OffsetBySelf( fIR.Width() ,0);
+				fIR.OffsetBySelf(fIR.Width(), 0);
 
 				if (coord != fMoveFrom)
 					view->DrawBitmapAsync(_ImageBoard(coord), fIR.LeftTop());
 			}
 
-			fIR.OffsetBySelf(0 ,fIR.Width());
+			fIR.OffsetBySelf(0, fIR.Width());
 			fIR.OffsetTo(fBoard2dOffset.x, fIR.top);
 		}
 	}
 
 	view->SetHighColor(255, 255, 0, 180);
-	view->SetPenSize(fIR.Width()/15);
-	//DRAW Arrows
-	std::vector< std::vector<BPoint> >::const_iterator itr = fArrows.begin();
+	view->SetPenSize(fIR.Width() / 15);
+	// DRAW Arrows
+	std::vector<std::vector<BPoint> >::const_iterator itr = fArrows.begin();
 
-	for ( ;itr != fArrows.end(); ++itr) {
+	for (; itr != fArrows.end(); ++itr) {
 		view->StrokeLine((*itr)[0], (*itr)[1]);
-		view->FillTriangle((*itr)[2], (*itr)[3],(*itr)[4]);
+		view->FillTriangle((*itr)[2], (*itr)[3], (*itr)[4]);
 	}
 
 
 	if (fIsDragging) {
-		view->SetHighColor( 0, 0, 0, 100);
-		view->SetPenSize(fIR.Width()/9 );
-		view->StrokeArc(_CTP(fMoveFrom) + BPoint(fIR.Width()/2,
-				fIR.Width()/2), fIR.Width()*0.4, fIR.Width()*0.4, 360, 360);
+		view->SetHighColor(0, 0, 0, 100);
+		view->SetPenSize(fIR.Width() / 9);
+		view->StrokeArc(_CTP(fMoveFrom) + BPoint(fIR.Width() / 2, fIR.Width() / 2),
+			fIR.Width() * 0.4, fIR.Width() * 0.4, 360, 360);
 	}
 
 	view->Sync();
@@ -343,7 +342,7 @@ ChessBoardView::_DrawInView(BView* view, BRect updateRect)
 void
 ChessBoardView::WindowActivated(bool active)
 {
-	BGLView::WindowActivated( active );
+	BGLView::WindowActivated(active);
 }
 
 
@@ -359,8 +358,8 @@ ChessBoardView::Render(void)
 {
 	if (fIs3D) {
 		LockGL();
-			_Draw();
-			SwapBuffers();
+		_Draw();
+		SwapBuffers();
 		UnlockGL();
 	} else {
 		if (fIsDragging) {
@@ -380,20 +379,20 @@ ChessBoardView::_Init(void)
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	// Enable lighting and set the position of the light
-	GLfloat light_position[] 	= {2, 2, 10, 0};
-	//GLfloat	white_light[]		= { 0.4, 0.4, 0.4, 1.0 };
-	GLfloat	white_light[]		= {0.99, 0.99, 0.99, 1.0};
-	GLfloat	lmodel_ambient[]	= {0.4, 0.4, 0.4, 1.0};
+	GLfloat light_position[] = { 2, 2, 10, 0 };
+	// GLfloat	white_light[]		= { 0.4, 0.4, 0.4, 1.0 };
+	GLfloat white_light[] = { 0.99, 0.99, 0.99, 1.0 };
+	GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
 
 	glClearColor(0.85, 0.85, 0.85, 1.0);
-	//glClearColor( 0.0, 0.0, 0.0, 0.0 );
+	// glClearColor( 0.0, 0.0, 0.0, 0.0 );
 	glShadeModel(GL_SMOOTH);
 
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
 
-	//glLightf( GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 999.999 );
+	// glLightf( GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 999.999 );
 
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -407,9 +406,9 @@ ChessBoardView::_Init(void)
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	//glEnable( GL_BLEND );
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE );
+	// glEnable( GL_BLEND );
+	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE );
 
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_POLYGON_SMOOTH_HINT);
@@ -423,19 +422,19 @@ ChessBoardView::_Draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-   _PolarView();
+	// glLoadIdentity();
+	_PolarView();
 	glTranslated(-fLookToX, -fLookToY, -fLookToZ);
 
 	fBoardModel->Draw();
 
 	if (fDrawPieces)
 		for (int i = 0; i < 8; ++i)
-		for (int j = 0; j < 8; ++j)
-			if (_Board(i, j) != NULL ) {
-				_Board(i, j)->SetVisible(true);
-				_Board(i, j)->Draw();
-			}
+			for (int j = 0; j < 8; ++j)
+				if (_Board(i, j) != NULL) {
+					_Board(i, j)->SetVisible(true);
+					_Board(i, j)->Draw();
+				}
 
 	glFlush();
 }
@@ -448,12 +447,12 @@ ChessBoardView::_Reshape(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(45.0f,	 							//camera angle
-				   (double)width / (double)height,		//width-to-height ratio
-				   1.0f,								//near clipping coordinate
-				   200.0f); 							//far clipping coordinate
+	gluPerspective(45.0f,				 // camera angle
+		(double)width / (double)height,	 // width-to-height ratio
+		1.0f,							 // near clipping coordinate
+		200.0f);						 // far clipping coordinate
 
-	//additional
+	// additional
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -462,7 +461,6 @@ ChessBoardView::_Reshape(int width, int height)
 void
 ChessBoardView::_DrawArrow(Tuple<uint> const& kFrom, Tuple<uint> const& kTo)
 {
-
 }
 
 
@@ -489,9 +487,9 @@ ChessBoardView::UserMoveFromTo(Tuple<int> kFrom, Tuple<int> kTo)
 
 	fValidMoves = _GetValidMoves(kFrom);
 
-	std::list<Move>::iterator itr= fValidMoves.begin();
+	std::list<Move>::iterator itr = fValidMoves.begin();
 
-	for ( ; itr != fValidMoves.end(); ++itr)
+	for (; itr != fValidMoves.end(); ++itr)
 		if (itr->From() == kFrom && itr->To() == kTo)
 			break;
 
@@ -522,30 +520,42 @@ ChessBoardView::_StrToMove(BString moveStr)
 	if (moveStr.Length() < 4)
 		return move;
 
-	move.Set(moveStr[0] - 'a', moveStr[1] - '1',
-										  moveStr[2] - 'a', moveStr[3] - '1');
+	move.Set(moveStr[0] - 'a', moveStr[1] - '1', moveStr[2] - 'a', moveStr[3] - '1');
 
 	if ((_BBoard(move.From()) & King) == King && move.DeltaX() == 2)
 		move.SetFlag(CASTLE);
-	else if((_BBoard(move.From()) & Pawn) == Pawn && move.DeltaX() != 0
-		&& _BBoard(move.To()) == Empty)
+	else if ((_BBoard(move.From()) & Pawn) == Pawn && move.DeltaX() != 0
+			 && _BBoard(move.To()) == Empty)
 		move.SetFlag(ENP);
 	else if (moveStr.Length() > 4) {
 		int flag;
 		switch (moveStr[4]) {
-			case 'q': case 'Q': flag = Queen ; break;
-			case 'r': case 'R': flag = Rook  ; break;
-			case 'b' : case 'B': flag = Bishop; break;
-			case 'n': case 'N': flag = Knight; break;
-			default: return move;
+			case 'q':
+			case 'Q':
+				flag = Queen;
+				break;
+			case 'r':
+			case 'R':
+				flag = Rook;
+				break;
+			case 'b':
+			case 'B':
+				flag = Bishop;
+				break;
+			case 'n':
+			case 'N':
+				flag = Knight;
+				break;
+			default:
+				return move;
 		}
 
 		move.SetFlag(PROM);
 
 		if (fBoard->IsWhiteTurn())
-			move.AddFlag((flag|WhiteFlag));
+			move.AddFlag((flag | WhiteFlag));
 		else
-			move.AddFlag((flag|BlackFlag));
+			move.AddFlag((flag | BlackFlag));
 	}
 
 	return move;
@@ -619,14 +629,14 @@ ChessBoardView::EngineMoveFromTo(BString moveStr)
 bool
 ChessBoardView::MoveFromTo(Move move)
 {
-	if (fBoard->IsLegal(move+2) == false)
+	if (fBoard->IsLegal(move + 2) == false)
 		return false;
 
 	if (fIs3D) {
 		delete _Board(move.To());
 
 		_Board(move.To()) = _Board(move.From());
-		_Board(move.To())-> SetCoordinate(move.To());
+		_Board(move.To())->SetCoordinate(move.To());
 		_Board(move.From()) = NULL;
 	}
 
@@ -643,9 +653,9 @@ void
 ChessBoardView::_HighlightOnlyCoord(int x, int y)
 {
 	for (int i = 0; i < 8; ++i)
-	for (int j = 0; j < 8; ++j)
-		if (_Board(i, j) != NULL)
-			_Board(i, j)->SetHighlight(false);
+		for (int j = 0; j < 8; ++j)
+			if (_Board(i, j) != NULL)
+				_Board(i, j)->SetHighlight(false);
 
 	if (_Board(x, y) != NULL)
 		_Board(x, y)->SetHighlight(true);
@@ -665,7 +675,7 @@ ChessBoardView::MouseDown(BPoint where)
 		be_app->SetCursor(fGrabCursor);
 
 		if (/*mouseButtons == B_PRIMARY_MOUSE_BUTTON*/ true) {
-			Tuple<int> coord = _ToCoord( _OGLPos( where ) );
+			Tuple<int> coord = _ToCoord(_OGLPos(where));
 
 			if (fMoveFrom != fNoMove) {
 				_HighlightCoord(fMoveFrom, false);
@@ -698,14 +708,13 @@ ChessBoardView::MouseDown(BPoint where)
 			fMoveFrom = coord;
 			fDragPiece2dBM = _ImageBoard(fMoveFrom);
 
-			if (fBoardIsTurned == false) coord.y = 7 - coord.y;
+			if (fBoardIsTurned == false)
+				coord.y = 7 - coord.y;
 
-			fGrabDiff = mousePos - BPoint(coord.x*fIR.Width(),
-														  coord.y*fIR.Width());
+			fGrabDiff = mousePos - BPoint(coord.x * fIR.Width(), coord.y * fIR.Width());
 			fGrabDiff += fGrabEffect;
 
-			fHCoord2D =  _To2DCoord(where - fGrabDiff +
-										   BPoint(fIR.Width()/2,fIR.Width()/2));
+			fHCoord2D = _To2DCoord(where - fGrabDiff + BPoint(fIR.Width() / 2, fIR.Width() / 2));
 
 			if (fBoardIsTurned == false)
 				fHCoord2D.y = 7 - fHCoord2D.y;
@@ -719,7 +728,7 @@ ChessBoardView::MouseDown(BPoint where)
 		Render();
 	}
 
-	BGLView :: MouseDown(where);
+	BGLView ::MouseDown(where);
 }
 
 
@@ -741,8 +750,7 @@ ChessBoardView::_OGLPos(BPoint const& where)
 
 	glReadPixels(winX, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-	gluUnProject(winX, winY, winZ, modelview, projection, viewport,
-														   &posX, &posY, &posZ);
+	gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 	return BPoint(posX, posY);
 }
 
@@ -791,13 +799,12 @@ ChessBoardView::MouseUp(BPoint where)
 	} else {
 		mousePos -= fBoard2dOffset;
 
-		Tuple<int> coord = _To2DCoord(where - fGrabDiff +
-										   BPoint(fIR.Width()/2,fIR.Width()/2));
+		Tuple<int> coord = _To2DCoord(where - fGrabDiff + BPoint(fIR.Width() / 2, fIR.Width() / 2));
 
 		if (fMoveFrom != fNoMove) {
 			if (UserMoveFromTo(fMoveFrom, coord)) {
 				fArrows.clear();
-				fArrows.push_back(_CreateArrow2D(fMoveFrom,coord));
+				fArrows.push_back(_CreateArrow2D(fMoveFrom, coord));
 			}
 
 			_CancelSelection();
@@ -808,10 +815,8 @@ ChessBoardView::MouseUp(BPoint where)
 }
 
 
-
 void
-ChessBoardView::MouseMoved(BPoint where, uint32 code,
-													const BMessage* dragMessage)
+ChessBoardView::MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage)
 {
 	BGLView::MouseMoved(where, code, dragMessage);
 
@@ -833,9 +838,9 @@ ChessBoardView::MouseMoved(BPoint where, uint32 code,
 		switch (fMouseButtons) {
 			case B_PRIMARY_MOUSE_BUTTON:
 			{
-				where       -= fOldMousePos;
-				fAzimuth	+= where.x / 50;
-				fElevation	-= where.y / 50;
+				where -= fOldMousePos;
+				fAzimuth += where.x / 50;
+				fElevation -= where.y / 50;
 
 				_AdjustAzimuth();
 				_AdjustElevation();
@@ -845,7 +850,7 @@ ChessBoardView::MouseMoved(BPoint where, uint32 code,
 
 			case B_SECONDARY_MOUSE_BUTTON:
 			{
-				where     -= fOldMousePos;
+				where -= fOldMousePos;
 				fDistance -= where.y / 100;
 				_AdjustDistance();
 				Render();
@@ -862,8 +867,7 @@ ChessBoardView::MouseMoved(BPoint where, uint32 code,
 		}
 	} else {
 		if (fMoveFrom != fNoMove) {
-			fHCoord2D =  _To2DCoord(where - fGrabDiff +
-				BPoint(fIR.Width()/2, fIR.Width()/2));
+			fHCoord2D = _To2DCoord(where - fGrabDiff + BPoint(fIR.Width() / 2, fIR.Width() / 2));
 
 			if (fBoardIsTurned == false)
 				fHCoord2D.y = 7 - fHCoord2D.y;
@@ -910,24 +914,25 @@ ChessBoardView::KeyDown(const char* bytes, int32 numBytes)
 				break;
 
 			case 'd':
-			 	fLookToX   += 0.2;
+				fLookToX += 0.2;
 				break;
 
 			case 'a':
-	  	 	fLookToX   -= 0.2;
+				fLookToX -= 0.2;
 				break;
 
 			case 'w':
-			 	fLookToY   += 0.5;
+				fLookToY += 0.5;
 				break;
 
 			case 's':
-			 	fLookToY   -= 0.5;
+				fLookToY -= 0.5;
 				break;
 
 			case 'e':
 			case B_PAGE_UP:
-				fLookToZ   += 0.2;;
+				fLookToZ += 0.2;
+				;
 				break;
 
 			case 'q':
@@ -935,11 +940,13 @@ ChessBoardView::KeyDown(const char* bytes, int32 numBytes)
 				fLookToZ -= 0.2;
 				break;
 
-			case B_UP_ARROW: case B_LEFT_ARROW:
+			case B_UP_ARROW:
+			case B_LEFT_ARROW:
 				Window()->PostMessage(MSG_MOVEBACK);
 				break;
 
-			case B_DOWN_ARROW: case B_RIGHT_ARROW:
+			case B_DOWN_ARROW:
+			case B_RIGHT_ARROW:
 				Window()->PostMessage(MSG_MOVENEXT);
 				break;
 
@@ -950,10 +957,10 @@ ChessBoardView::KeyDown(const char* bytes, int32 numBytes)
 			case B_ENTER:
 				break;
 
-		  	default:
+			default:
 				BGLView::KeyDown(bytes, numBytes);
-	  	 	break;
- 		}
+				break;
+		}
 	}
 
 	Render();
@@ -979,8 +986,8 @@ ChessBoardView::_ShowPossibleMoves(Tuple<uint> kFrom)
 	std::list<Move>::const_iterator itr = moves.begin();
 
 	for (; itr != moves.end(); ++itr)
-		!out << itr->FromX() << "-" << itr->FromY()<< "    "
-			 << itr->ToX()<< "-" << itr->ToY() << std::endl;
+		!out << itr->FromX() << "-" << itr->FromY() << "    " << itr->ToX() << "-" << itr->ToY()
+			 << std::endl;
 }
 
 
@@ -1058,15 +1065,15 @@ ChessBoardView::_InitBoardFromBackBoard(void)
 	}
 
 	for (int j = 0; j < 8; ++j)
-	for (int i = 0; i < 8; ++i) {
-		delete _Board(i, j);
-		_Board(i, j) = NULL;
+		for (int i = 0; i < 8; ++i) {
+			delete _Board(i, j);
+			_Board(i, j) = NULL;
 
-		if (_BBoard(i,j) != Empty) {
-			_Board(i, j) = new Model3DS(*_3DModel(i, j));
-			_Board(i, j)->SetCoordinate(i, j);
+			if (_BBoard(i, j) != Empty) {
+				_Board(i, j) = new Model3DS(*_3DModel(i, j));
+				_Board(i, j)->SetCoordinate(i, j);
+			}
 		}
-	}
 }
 
 
@@ -1075,10 +1082,10 @@ ChessBoardView::MoveFirst(void)
 {
 	fBoard->MoveFirst();
 
-	//rewrite.  Store the board with pointers in a vector...
-	//and use it to switch to other positions....,
-	//and don't delete the Models, just hide them
-	//and store a number, that indicates when the model should be hidden.
+	// rewrite.  Store the board with pointers in a vector...
+	// and use it to switch to other positions....,
+	// and don't delete the Models, just hide them
+	// and store a number, that indicates when the model should be hidden.
 
 	_InitBoardFromBackBoard();
 	Render();
@@ -1121,7 +1128,8 @@ ChessBoardView::GotoMove(uint idx)
 }
 
 
-void ChessBoardView::NewGame(void)
+void
+ChessBoardView::NewGame(void)
 {
 	fBoard->NewGame();
 	fUserCanMove = true;
@@ -1133,8 +1141,10 @@ void ChessBoardView::NewGame(void)
 void
 ChessBoardView::ChangeViewMode(void)
 {
-	if (fIs3D)      SetViewMode3D(false);
-	else            SetViewMode3D(true);
+	if (fIs3D)
+		SetViewMode3D(false);
+	else
+		SetViewMode3D(true);
 }
 
 
@@ -1165,7 +1175,7 @@ void
 ChessBoardView::_LoadImages(void)
 {
 	delete fBoard2dBM;
-	fBoard2dBM = Tools::LoadBitmap("board", fIR.Width()*8);
+	fBoard2dBM = Tools::LoadBitmap("board", fIR.Width() * 8);
 
 	for (int i = 0; i < 12; ++i) {
 		delete fBM[i];
@@ -1178,40 +1188,64 @@ BBitmap*
 ChessBoardView::_ImageBoard(uint const& x, uint const& y)
 {
 	switch (_BBoard(x, y)) {
-		case P_W: return fBM[wP];
-		case N_W: return fBM[wN];
-		case B_W: return fBM[wB];
-		case R_W: return fBM[wR];
-		case Q_W: return fBM[wQ];
-		case K_W: return fBM[wK];
-		case P_B: return fBM[bP];
-		case N_B: return fBM[bN];
-		case B_B: return fBM[bB];
-		case R_B: return fBM[bR];
-		case Q_B: return fBM[bQ];
-		case K_B: return fBM[bK];
+		case P_W:
+			return fBM[wP];
+		case N_W:
+			return fBM[wN];
+		case B_W:
+			return fBM[wB];
+		case R_W:
+			return fBM[wR];
+		case Q_W:
+			return fBM[wQ];
+		case K_W:
+			return fBM[wK];
+		case P_B:
+			return fBM[bP];
+		case N_B:
+			return fBM[bN];
+		case B_B:
+			return fBM[bB];
+		case R_B:
+			return fBM[bR];
+		case Q_B:
+			return fBM[bQ];
+		case K_B:
+			return fBM[bK];
 		default:
 			return NULL;
 	}
 }
 
 
-Model3DS* &
+Model3DS*&
 ChessBoardView::_3DModel(uint const& x, uint const& y)
 {
 	switch (_BBoard(x, y)) {
-		case P_W: return f3DPieces[wP];
-		case N_W: return f3DPieces[wN];
-		case B_W: return f3DPieces[wB];
-		case R_W: return f3DPieces[wR];
-		case Q_W: return f3DPieces[wQ];
-		case K_W: return f3DPieces[wK];
-		case P_B: return f3DPieces[bP];
-		case N_B: return f3DPieces[bN];
-		case B_B: return f3DPieces[bB];
-		case R_B: return f3DPieces[bR];
-		case Q_B: return f3DPieces[bQ];
-		case K_B: return f3DPieces[bK];
+		case P_W:
+			return f3DPieces[wP];
+		case N_W:
+			return f3DPieces[wN];
+		case B_W:
+			return f3DPieces[wB];
+		case R_W:
+			return f3DPieces[wR];
+		case Q_W:
+			return f3DPieces[wQ];
+		case K_W:
+			return f3DPieces[wK];
+		case P_B:
+			return f3DPieces[bP];
+		case N_B:
+			return f3DPieces[bN];
+		case B_B:
+			return f3DPieces[bB];
+		case R_B:
+			return f3DPieces[bR];
+		case Q_B:
+			return f3DPieces[bQ];
+		case K_B:
+			return f3DPieces[bK];
 		default:
 			return f3DPieces[wP];
 	}
@@ -1233,11 +1267,11 @@ BPoint
 ChessBoardView::_CTP(Tuple<int> const& coord)
 {
 	if (fBoardIsTurned)
-		return BPoint(coord.x*fIR.Width() + fBoard2dOffset.x,
-									coord.y*fIR.Width() + fBoard2dOffset.y);
+		return BPoint(
+			coord.x * fIR.Width() + fBoard2dOffset.x, coord.y * fIR.Width() + fBoard2dOffset.y);
 	else
-		return BPoint(coord.x*fIR.Width() + fBoard2dOffset.x,
-								(7-coord.y)*fIR.Width() + fBoard2dOffset.y);
+		return BPoint(coord.x * fIR.Width() + fBoard2dOffset.x,
+			(7 - coord.y) * fIR.Width() + fBoard2dOffset.y);
 }
 
 
@@ -1245,52 +1279,52 @@ std::vector<BPoint>
 ChessBoardView::_CreateArrow2D(Tuple<int> const& from, Tuple<int> const& to)
 {
 	std::vector<BPoint> vec;
-	BPoint pFrom = _CTP(from) + BPoint(fIR.Width()*0.5, fIR.Width()*0.5);
-	BPoint pTo   = _CTP(to) + BPoint(fIR.Width()*0.5, fIR.Width()*0.5);
+	BPoint pFrom = _CTP(from) + BPoint(fIR.Width() * 0.5, fIR.Width() * 0.5);
+	BPoint pTo = _CTP(to) + BPoint(fIR.Width() * 0.5, fIR.Width() * 0.5);
 	BPoint tp1, tp2, tp3;
 
 	float angle = 0;
 
 	if (pFrom.x == pTo.x) {
-		if (pTo.y < pFrom.y ) {
-			pTo += BPoint(0, fIR.Width()*0.45);
-			angle = PI/2;
+		if (pTo.y < pFrom.y) {
+			pTo += BPoint(0, fIR.Width() * 0.45);
+			angle = PI / 2;
 		} else {
-			pTo -= BPoint(0, fIR.Width()*0.45);
-			angle = -PI/2;
+			pTo -= BPoint(0, fIR.Width() * 0.45);
+			angle = -PI / 2;
 		}
 	} else if (pFrom.y == pTo.y) {
 		if (pTo.x < pFrom.x) {
 			angle = PI;
-			pTo += BPoint(fIR.Width()*0.45, 0);
+			pTo += BPoint(fIR.Width() * 0.45, 0);
 		} else {
 			angle = 0;
-			pTo -= BPoint(fIR.Width()*0.45, 0);
+			pTo -= BPoint(fIR.Width() * 0.45, 0);
 		}
 	} else if (pFrom.y < pTo.y) {
 		float c = (pFrom.y - pTo.y) / (pTo.x - pFrom.x);
 
 		if (pFrom.x < pTo.x) {
 			angle = atan(c);
-			pTo -= BPoint(fIR.Width()*0.45, fIR.Width()*0.45);
+			pTo -= BPoint(fIR.Width() * 0.45, fIR.Width() * 0.45);
 		} else {
 			angle = PI + atan(c);
-			pTo -= BPoint(-fIR.Width()*0.45, fIR.Width()*0.45);
+			pTo -= BPoint(-fIR.Width() * 0.45, fIR.Width() * 0.45);
 		}
 	} else {
 		float c = (pFrom.y - pTo.y) / (pTo.x - pFrom.x);
 
 		if (pFrom.x < pTo.x) {
 			angle = atan(c);
-			pTo += BPoint(-fIR.Width()*0.45, fIR.Width()*0.45);
+			pTo += BPoint(-fIR.Width() * 0.45, fIR.Width() * 0.45);
 		} else {
 			angle = PI + atan(c);
-			pTo += BPoint(fIR.Width()*0.45, fIR.Width()*0.45);
+			pTo += BPoint(fIR.Width() * 0.45, fIR.Width() * 0.45);
 		}
 	}
 
 	_MakeArrowHead(tp1, tp2, tp3, angle, pTo);
-	vec.push_back(pFrom );
+	vec.push_back(pFrom);
 	vec.push_back(pTo);
 	vec.push_back(tp1);
 	vec.push_back(tp2);
@@ -1301,20 +1335,27 @@ ChessBoardView::_CreateArrow2D(Tuple<int> const& from, Tuple<int> const& to)
 
 
 void
-ChessBoardView::_MakeArrowHead(BPoint& p1, BPoint& p2, BPoint& p3,
-												   float a, BPoint const& shift)
+ChessBoardView::_MakeArrowHead(BPoint& p1, BPoint& p2, BPoint& p3, float a, BPoint const& shift)
 {
-	p1 = BPoint(0, -fIR.Width()*0.1);
-	p2 = BPoint(0, +fIR.Width()*0.1);
-	p3 = BPoint(fIR.Width()*0.2, 0);
+	p1 = BPoint(0, -fIR.Width() * 0.1);
+	p2 = BPoint(0, +fIR.Width() * 0.1);
+	p3 = BPoint(fIR.Width() * 0.2, 0);
 
 	BPoint tp;
 
-	tp = p1; p1.x = cos(a)*tp.x + sin(a)*tp.y; p1.y = -sin(a)*tp.x + cos(a)*tp.y;
-	tp = p2; p2.x = cos(a)*tp.x + sin(a)*tp.y; p2.y = -sin(a)*tp.x + cos(a)*tp.y;
-	tp = p3; p3.x = cos(a)*tp.x + sin(a)*tp.y; p3.y = -sin(a)*tp.x + cos(a)*tp.y;
+	tp = p1;
+	p1.x = cos(a) * tp.x + sin(a) * tp.y;
+	p1.y = -sin(a) * tp.x + cos(a) * tp.y;
+	tp = p2;
+	p2.x = cos(a) * tp.x + sin(a) * tp.y;
+	p2.y = -sin(a) * tp.x + cos(a) * tp.y;
+	tp = p3;
+	p3.x = cos(a) * tp.x + sin(a) * tp.y;
+	p3.y = -sin(a) * tp.x + cos(a) * tp.y;
 
-	p1 += shift; p2 += shift; p3 += shift;
+	p1 += shift;
+	p2 += shift;
+	p3 += shift;
 }
 
 
@@ -1345,7 +1386,6 @@ ChessBoardView::SetBoardTurned(bool turned)
 {
 	if (fBoardIsTurned != turned)
 		FlipBoard();
-
 }
 
 
@@ -1353,9 +1393,7 @@ ChessBoardView::SetBoardTurned(bool turned)
 BBitmap*
 ChessBoardView::_CreateBitmapBuffer(void)
 {
-
-	BBitmap* bitmap = new BBitmap(Bounds().OffsetToCopy(B_ORIGIN),
-		B_RGBA32, true);
+	BBitmap* bitmap = new BBitmap(Bounds().OffsetToCopy(B_ORIGIN), B_RGBA32, true);
 	BView* offscreen = new BView(bitmap->Bounds(), NULL, 0, 0);
 	bitmap->Lock();
 	bitmap->AddChild(offscreen);
@@ -1379,7 +1417,6 @@ ChessBoardView::_CreateBitmapBuffer(void)
 		offscreen->SetHighColor(ViewColor());
 		offscreen->FillRect(offscreen->Bounds());
 	}
-
 
 
 	offscreen->SetHighColor(HighColor());

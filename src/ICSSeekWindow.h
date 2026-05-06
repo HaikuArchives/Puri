@@ -9,42 +9,49 @@
 #ifndef ICSSEEKWINDOW_H
 #define ICSSEEKWINDOW_H
 
-#include <InterfaceKit.h>
 #include <GroupLayout.h>
+#include <InterfaceKit.h>
 #include <Window.h>
 
 #include "Debug.h"
 
-class ICSSeekWindow : public BWindow
-{
+class ICSSeekWindow : public BWindow {
 public:
-                    ICSSeekWindow(BWindow* target);
-    virtual void    MessageReceived(BMessage* message);
-    virtual bool    QuitRequested(void);
+	ICSSeekWindow(BWindow* target);
+	virtual void MessageReceived(BMessage* message);
+	virtual bool QuitRequested(void);
 
-    enum{	M_OK = 'iob1', M_CANCEL = 'icb1', M_HELP = 'ihb1',
-         	M_BULLET = 'ibb1', M_FAST = 'ifb1', M_NORMAL = 'inb1',
-         	M_SLOW = 'isb1', M_RATED = 'irb1'};
+	enum {
+		M_OK = 'iob1',
+		M_CANCEL = 'icb1',
+		M_HELP = 'ihb1',
+		M_BULLET = 'ibb1',
+		M_FAST = 'ifb1',
+		M_NORMAL = 'inb1',
+		M_SLOW = 'isb1',
+		M_RATED = 'irb1'
+	};
+
 private:
-            void    _LoadSettings(void);
-            void    _SaveSettings(void);
+	void _LoadSettings(void);
+	void _SaveSettings(void);
 
-    BWindow*                fTarget;
+	BWindow* fTarget;
 
-    BTextControl*           fTimeMin;
-    BTextControl*           fTimeMax;
-    BTextControl*           fIncMin;
-    BTextControl*           fIncMax;
+	BTextControl* fTimeMin;
+	BTextControl* fTimeMax;
+	BTextControl* fIncMin;
+	BTextControl* fIncMax;
 
-    BRadioButton*           fColorAutomatic;
-    BRadioButton*           fColorWhite;
-    BRadioButton*           fColorBlack;
+	BRadioButton* fColorAutomatic;
+	BRadioButton* fColorWhite;
+	BRadioButton* fColorBlack;
 
-    BCheckBox*              fRated;
-    BCheckBox*              fWithClock;
+	BCheckBox* fRated;
+	BCheckBox* fWithClock;
 
 
-    Debug                   out;
+	Debug out;
 };
 
 

@@ -8,7 +8,8 @@
  */
 #include "MainApplication.h"
 
-int main( void )
+int
+main(void)
 {
 	new MainApplication();
 

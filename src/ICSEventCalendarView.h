@@ -14,34 +14,30 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "ColumnListView.h"
 #include "Debug.h"
 
-class EventListView : public BColumnListView
-{
+class EventListView : public BColumnListView {
 public:
-                    EventListView(void);
+	EventListView(void);
 
 private:
-
 };
 
-class ICSEventCalendarView : public BGroupView
-{
+class ICSEventCalendarView : public BGroupView {
 public:
-                    ICSEventCalendarView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSEventCalendarView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
 private:
+	EventListView* fListView;
 
-    EventListView*      fListView;
-
-    Debug               out;
+	Debug out;
 };
 
 
-#endif // ICSEVENTCALENDARVIEW_H
+#endif	// ICSEVENTCALENDARVIEW_H

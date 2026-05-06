@@ -14,44 +14,40 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "ColumnListView.h"
 #include "Debug.h"
 
-class GameCategoryListView : public BColumnListView
-{
+class GameCategoryListView : public BColumnListView {
 public:
-                    GameCategoryListView(void);
+	GameCategoryListView(void);
 
 private:
-
 };
 
 
-class GamesListView : public BColumnListView
-{
+class GamesListView : public BColumnListView {
 public:
-                    GamesListView(void);
+	GamesListView(void);
 
 private:
-
 };
 
 
-class ICSGamesView : public BGroupView
-{
+class ICSGamesView : public BGroupView {
 public:
-                    ICSGamesView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
-private:
-    GameCategoryListView*   fCategoryListView;
-    GamesListView*          fGamesListView;
+	ICSGamesView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
-    Debug           out;
+private:
+	GameCategoryListView* fCategoryListView;
+	GamesListView* fGamesListView;
+
+	Debug out;
 };
 
 
-#endif // ICSGAMEWVIEW_H
+#endif	// ICSGAMEWVIEW_H

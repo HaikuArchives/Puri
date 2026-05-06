@@ -14,23 +14,22 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "Debug.h"
 
-class ICSInfoView : public BGroupView
-{
+class ICSInfoView : public BGroupView {
 public:
-                    ICSInfoView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSInfoView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
 private:
-    BTextView*      fTextView;
+	BTextView* fTextView;
 
-    Debug           out;
+	Debug out;
 };
 
 
-#endif // ICSINFOVIEW_H
+#endif	// ICSINFOVIEW_H

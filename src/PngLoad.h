@@ -33,6 +33,6 @@
 
 #include <GL/gl.h>
 
-GLuint loadPNGTexture(const char *filename);
+GLuint loadPNGTexture(const char* filename);
 
 #endif

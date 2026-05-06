@@ -16,17 +16,17 @@
 
 #include "Debug.h"
 
-class BlinkerView : public BView
-{
+class BlinkerView : public BView {
 public:
-                    BlinkerView(void);
-    virtual void    Draw(BRect updateRect);
-            void    SetOn(bool on = true);
+	BlinkerView(void);
+	virtual void Draw(BRect updateRect);
+	void SetOn(bool on = true);
+
 private:
-    BGradientLinear         fGradientOn;
-    BGradientLinear         fGradientOff;
-    bool                    fIsOn;
-    Debug                   out;
+	BGradientLinear fGradientOn;
+	BGradientLinear fGradientOff;
+	bool fIsOn;
+	Debug out;
 };
 
 #endif

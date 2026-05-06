@@ -14,34 +14,31 @@
 #include <Message.h>
 #include <ScrollBar.h>
 #include <String.h>
-#include <TextView.h>
 #include <TextControl.h>
+#include <TextView.h>
 
 #include "ColumnListView.h"
 #include "Debug.h"
 
-class OutboxListView : public BColumnListView
-{
+class OutboxListView : public BColumnListView {
 public:
-                    OutboxListView(void);
+	OutboxListView(void);
 
 private:
-
 };
 
-class ICSOutboxView : public BGroupView
-{
+class ICSOutboxView : public BGroupView {
 public:
-                    ICSOutboxView(void);
-    virtual void    AttachedToWindow(void);
-    virtual void    MessageReceived(BMessage* message);
+	ICSOutboxView(void);
+	virtual void AttachedToWindow(void);
+	virtual void MessageReceived(BMessage* message);
 
 private:
-    OutboxListView*      fListView;
-    BTextView*          fTextView;
+	OutboxListView* fListView;
+	BTextView* fTextView;
 
-    Debug           out;
+	Debug out;
 };
 
 
-#endif // ICSOUTBOXVIEW_H
+#endif	// ICSOUTBOXVIEW_H

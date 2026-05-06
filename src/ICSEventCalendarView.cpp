@@ -17,34 +17,31 @@
 #include "ToolBar.h"
 
 EventListView::EventListView(void)
-    :
-    BColumnListView("event_listview", 0)
+	: BColumnListView("event_listview", 0)
 {
-
-
 }
 
 
 ICSEventCalendarView::ICSEventCalendarView(void)
-    :
-    BGroupView("icseventcalendarview", B_VERTICAL, 0)
+	: BGroupView("icseventcalendarview", B_VERTICAL, 0)
 {
-    fListView = new EventListView();
-    fListView->AddColumn(new BTitledColumn("Event", 200, 0, 10000), 0);
-    fListView->AddColumn(new BTitledColumn("Room", 100, 0, 10000), 1);
-    fListView->AddColumn(new BTitledColumn("Type", 80, 0, 10000), 2);
-    fListView->AddColumn(new BTitledColumn("Date", 100, 0, 10000), 3);
-    fListView->AddColumn(new BTitledColumn("Time", 50, 0, 10000), 4);
+	fListView = new EventListView();
+	fListView->AddColumn(new BTitledColumn("Event", 200, 0, 10000), 0);
+	fListView->AddColumn(new BTitledColumn("Room", 100, 0, 10000), 1);
+	fListView->AddColumn(new BTitledColumn("Type", 80, 0, 10000), 2);
+	fListView->AddColumn(new BTitledColumn("Date", 100, 0, 10000), 3);
+	fListView->AddColumn(new BTitledColumn("Time", 50, 0, 10000), 4);
 
 
+	ToolBar* toolBar = new ToolBar;
+	toolBar->AddButton("Visit Event", "move_now");
 
-    ToolBar* toolBar = new ToolBar;
-    toolBar->AddButton("Visit Event", "move_now");
-
-    BLayoutBuilder::Group<>(this)
-        .Add(fListView)
-        .Add(toolBar)
-    ;
+	// clang-format off
+	BLayoutBuilder::Group<>(this)
+		.Add(fListView)
+		.Add(toolBar)
+	;
+	// clang-format on
 }
 
 
@@ -58,11 +55,9 @@ ICSEventCalendarView::AttachedToWindow(void)
 void
 ICSEventCalendarView::MessageReceived(BMessage* message)
 {
-    switch (message->what) {
-
-
+	switch (message->what) {
 		default:
-            BGroupView::MessageReceived(message);
+			BGroupView::MessageReceived(message);
 			break;
 	}
 }

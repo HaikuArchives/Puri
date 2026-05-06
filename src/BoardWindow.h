@@ -29,81 +29,78 @@
 #include "MaterialView.h"
 #include "MovesView.h"
 #include "NavigationView.h"
-#include "TimeView.h"
 #include "SidebarView.h"
+#include "TimeView.h"
 
 
-class BoardWindow : public BWindow
-{
+class BoardWindow : public BWindow {
 public:
-                        BoardWindow(void);
-                        BoardWindow(int index, bool userIsWhite,
-                            BString whiteName, BString blackName,
-                            ICSMainWindow* icswindow, ICS* ics);
-    virtual void        MessageReceived(BMessage* message);
-    virtual bool        QuitRequested(void);
+	BoardWindow(void);
+	BoardWindow(int index, bool userIsWhite, BString whiteName, BString blackName,
+		ICSMainWindow* icswindow, ICS* ics);
+	virtual void MessageReceived(BMessage* message);
+	virtual bool QuitRequested(void);
 
-            int         Index(void) { return fIndex; }
+	int Index(void) { return fIndex; }
 
 private:
-            void        _SaveSettings(void);
-            void        _LoadSettings(void);
-    inline  void        _EngineGo();
-    inline  void        _EngineStop();
-    bool                _MessageFilter(BMessage* message);
-    BMenuBar*		    _CreateMenuBar(void);
+	void _SaveSettings(void);
+	void _LoadSettings(void);
+	inline void _EngineGo();
+	inline void _EngineStop();
+	bool _MessageFilter(BMessage* message);
+	BMenuBar* _CreateMenuBar(void);
 
-    BCardLayout*	        fCard;
-    BMenuBar*		        fMenuBar;
-    BMenuItem*		        fPauseMenuItem;
-    BMenuItem*		        fEngineOffMenuItem;
-    BMenuItem*	            fFlipBoardMI;
-    BMenuItem*	            f3DMI;
-    BMenuItem*		        fSidebarMenuItem;
-    BMenuItem*		        fMinIfMenuItem;
-    BMenuItem*		        fAutohidingMenuItem;
-    BMenuItem*              fShowClockMenuItem;
-    BMenuItem*		        fShowMBarMenuItem;
-    BMenuItem*		        fShowborderMenuItem;
-    BMenuItem*		        fMoveAssistantMenuItem;
-    BMenuItem*              fAlwaysOnTopMenuItem;
-    BMenuItem*              fFullScrMI;
-    BMenuItem*              fICSConnectMI;
+	BCardLayout* fCard;
+	BMenuBar* fMenuBar;
+	BMenuItem* fPauseMenuItem;
+	BMenuItem* fEngineOffMenuItem;
+	BMenuItem* fFlipBoardMI;
+	BMenuItem* f3DMI;
+	BMenuItem* fSidebarMenuItem;
+	BMenuItem* fMinIfMenuItem;
+	BMenuItem* fAutohidingMenuItem;
+	BMenuItem* fShowClockMenuItem;
+	BMenuItem* fShowMBarMenuItem;
+	BMenuItem* fShowborderMenuItem;
+	BMenuItem* fMoveAssistantMenuItem;
+	BMenuItem* fAlwaysOnTopMenuItem;
+	BMenuItem* fFullScrMI;
+	BMenuItem* fICSConnectMI;
 
-    BTabView*		        fTabView;
-    std::vector<BTab*>      fTabsVec;
+	BTabView* fTabView;
+	std::vector<BTab*> fTabsVec;
 
-    BGroupLayout*	        fLeftColumn;
-    BGroupLayout*	        fMiddleColumn;
-    BGroupLayout*	        fRightColumn;
+	BGroupLayout* fLeftColumn;
+	BGroupLayout* fMiddleColumn;
+	BGroupLayout* fRightColumn;
 
-    ICSChatView*            fChatView;
-    ChessBoardView*		    fChessBoard;
-    MovesView*			    fMovesView;
-    NavigationView*		    fNavigationView;
-    SidebarView*            fSidebarView;
-    TimeView*			    fTimeView;
-    MaterialView*           fMaterialView;
-    BSlider*                fSkillSlider;
-    BSplitView*             fSplitView;
-    BSplitView*             fMaterialSV;
+	ICSChatView* fChatView;
+	ChessBoardView* fChessBoard;
+	MovesView* fMovesView;
+	NavigationView* fNavigationView;
+	SidebarView* fSidebarView;
+	TimeView* fTimeView;
+	MaterialView* fMaterialView;
+	BSlider* fSkillSlider;
+	BSplitView* fSplitView;
+	BSplitView* fMaterialSV;
 
-    EngineOutputView*       fEngineOutput;
-    Engine*			        fEngine;
-    ICSMainWindow*    		fICSMainWindow;
-    ICS*                    fICS;
+	EngineOutputView* fEngineOutput;
+	Engine* fEngine;
+	ICSMainWindow* fICSMainWindow;
+	ICS* fICS;
 
-    BRect                   fSavedFrame;
-    bool                    fEngineCanWrite;
-    bool                    fEngineIsRunning;
+	BRect fSavedFrame;
+	bool fEngineCanWrite;
+	bool fEngineIsRunning;
 
-    int                     fIndex;
+	int fIndex;
 
-    BString                 fPlayerName[2];
+	BString fPlayerName[2];
 
-    Debug                   out;
+	Debug out;
 };
 
 
 #endif
-

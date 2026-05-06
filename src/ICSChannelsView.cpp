@@ -17,52 +17,47 @@
 #include "ToolBar.h"
 
 ChannelsListView::ChannelsListView(void)
-    :
-    BColumnListView("channels_listview", 0)
+	: BColumnListView("channels_listview", 0)
 {
-
-
 }
 
 ICSChannelsView::ICSChannelsView(void)
-    :
-    BGroupView("ics_channels_view", B_VERTICAL, 0)
+	: BGroupView("ics_channels_view", B_VERTICAL, 0)
 {
-    fListView = new ChannelsListView();
-    fListView->AddColumn(new BTitledColumn("Name", 100, 0, 10000), 0);
-    fListView->AddColumn(new BTitledColumn("Status", 70, 0, 10000), 1);
-    fListView->AddColumn(new BTitledColumn("N People", 100, 0, 10000), 2);
+	fListView = new ChannelsListView();
+	fListView->AddColumn(new BTitledColumn("Name", 100, 0, 10000), 0);
+	fListView->AddColumn(new BTitledColumn("Status", 70, 0, 10000), 1);
+	fListView->AddColumn(new BTitledColumn("N People", 100, 0, 10000), 2);
 
-    ToolBar* toolBar = new ToolBar;
-    toolBar->AddButton("Join", "join");
-    toolBar->AddButton("Leave", "leave");
-    toolBar->AddButton("Talk", "speaker");
-    toolBar->AddButton("Refresh", "swap");
-    toolBar->AddButton("Who?", "find");
-    toolBar->AddButton("New", "new");
+	ToolBar* toolBar = new ToolBar;
+	toolBar->AddButton("Join", "join");
+	toolBar->AddButton("Leave", "leave");
+	toolBar->AddButton("Talk", "speaker");
+	toolBar->AddButton("Refresh", "swap");
+	toolBar->AddButton("Who?", "find");
+	toolBar->AddButton("New", "new");
 
-    BLayoutBuilder::Group<>(this)
-        .Add(fListView)
-        .Add(toolBar)
-    ;
+	// clang-format off
+	BLayoutBuilder::Group<>(this)
+		.Add(fListView)
+		.Add(toolBar)
+	;
+	// clang-format on
 }
 
 
 void
 ICSChannelsView::AttachedToWindow(void)
 {
-
 }
 
 
 void
 ICSChannelsView::MessageReceived(BMessage* message)
 {
-    switch (message->what) {
-
-
+	switch (message->what) {
 		default:
-            BGroupView::MessageReceived(message);
+			BGroupView::MessageReceived(message);
 			break;
 	}
 }

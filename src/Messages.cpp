@@ -11,8 +11,7 @@
 void
 SendICS(BString str, BLooper* looper)
 {
-    BMessage msg(MSG_SEND_ICS_CMD);
-    msg.AddString("info", str);
-    looper->PostMessage(&msg);
+	BMessage msg(MSG_SEND_ICS_CMD);
+	msg.AddString("info", str);
+	looper->PostMessage(&msg);
 }
-

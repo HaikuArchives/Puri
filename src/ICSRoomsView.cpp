@@ -18,8 +18,7 @@
 
 
 RoomItem::RoomItem(const char* name)
-	:
-    BListItem()
+	: BListItem()
 {
 	fName = strdup(name);
 }
@@ -32,10 +31,10 @@ RoomItem::~RoomItem()
 
 
 void
-RoomItem::DrawItem(BView *owner, BRect itemRect, bool complete)
+RoomItem::DrawItem(BView* owner, BRect itemRect, bool complete)
 {
-	rgb_color kBlack = { 0,0,0,0 };
-	rgb_color kHighlight = { 156,154,156,0 };
+	rgb_color kBlack = { 0, 0, 0, 0 };
+	rgb_color kHighlight = { 156, 154, 156, 0 };
 
 	if (IsSelected() || complete) {
 		rgb_color color;
@@ -54,7 +53,7 @@ RoomItem::DrawItem(BView *owner, BRect itemRect, bool complete)
 	}
 
 	BFont font = be_plain_font;
-	font_height	finfo;
+	font_height finfo;
 	font.GetHeight(&finfo);
 
 	BPoint point = BPoint(itemRect.left + 5, itemRect.bottom - finfo.descent + 1);
@@ -69,56 +68,56 @@ RoomItem::DrawItem(BView *owner, BRect itemRect, bool complete)
 
 
 RoomsListView::RoomsListView(void)
-    :
-    BOutlineListView("rooms_listview")
+	: BOutlineListView("rooms_listview")
 {
-
 }
 
 #include <List.h>
 ICSRoomsView::ICSRoomsView(void)
-    :
-    BGroupView("icsroomsview", B_VERTICAL, 0)
+	: BGroupView("icsroomsview", B_VERTICAL, 0)
 {
-    RoomItem* item1 = new RoomItem("Play and Watch");
-   // item1->SetOutlineLevel(1);
-    RoomItem* item2 = new RoomItem("Main Playing Hall");
-    //item2->SetOutlineLevel(0);
-    RoomItem* item3 = new RoomItem("Beginners");
-    //item2->SetOutlineLevel(0);
-    RoomItem* item4 = new RoomItem("Tournaments");
-    RoomItem* item5 = new RoomItem("Computer Chess");
+	RoomItem* item1 = new RoomItem("Play and Watch");
+	// item1->SetOutlineLevel(1);
+	RoomItem* item2 = new RoomItem("Main Playing Hall");
+	// item2->SetOutlineLevel(0);
+	RoomItem* item3 = new RoomItem("Beginners");
+	// item2->SetOutlineLevel(0);
+	RoomItem* item4 = new RoomItem("Tournaments");
+	RoomItem* item5 = new RoomItem("Computer Chess");
 
 
-    fRoomsListView = new RoomsListView();
-    fRoomsListView->AddItem(item1);
-    fRoomsListView->AddUnder(item3,  item1);
-    fRoomsListView->AddUnder(item2, item1);
-    fRoomsListView->AddItem(item4);
-    fRoomsListView->AddItem(item5);
+	fRoomsListView = new RoomsListView();
+	fRoomsListView->AddItem(item1);
+	fRoomsListView->AddUnder(item3, item1);
+	fRoomsListView->AddUnder(item2, item1);
+	fRoomsListView->AddItem(item4);
+	fRoomsListView->AddItem(item5);
 
-    fScrollBar = new BScrollBar("rooms_scrollbar", fRoomsListView, 0, 100,
-        B_VERTICAL);
+	fScrollBar = new BScrollBar("rooms_scrollbar", fRoomsListView, 0, 100, B_VERTICAL);
 
-    ToolBar* toolBar = new ToolBar();
-    toolBar->AddButton("Refresh", "swap");
-    
-    BGroupLayout* layout;
-    layout = BLayoutBuilder::Group<>(B_VERTICAL, 0)
-        .AddGroup(B_HORIZONTAL, 0, 1)
-            .Add(fRoomsListView)
-            .Add(fScrollBar)
-        .End()
-        .Add(toolBar)
-    ;
-    
-    BBox* boxFrame = new BBox("box_frame");
-    boxFrame->SetBorder(B_FANCY_BORDER);
-    boxFrame->AddChild(layout->View());
+	ToolBar* toolBar = new ToolBar();
+	toolBar->AddButton("Refresh", "swap");
 
-    BLayoutBuilder::Group<>(this)
-        .Add(boxFrame)
-    ;
+	// clang-format off
+	BGroupLayout* layout;
+	layout = BLayoutBuilder::Group<>(B_VERTICAL, 0)
+		.AddGroup(B_HORIZONTAL, 0, 1)
+			.Add(fRoomsListView)
+			.Add(fScrollBar)
+		.End()
+		.Add(toolBar)
+	;
+	// clang-format on
+
+	BBox* boxFrame = new BBox("box_frame");
+	boxFrame->SetBorder(B_FANCY_BORDER);
+	boxFrame->AddChild(layout->View());
+
+	// clang-format off
+	BLayoutBuilder::Group<>(this)
+		.Add(boxFrame)
+	;
+	// clang-format on
 }
 
 
@@ -132,11 +131,9 @@ ICSRoomsView::AttachedToWindow(void)
 void
 ICSRoomsView::MessageReceived(BMessage* message)
 {
-    switch (message->what) {
-
-
+	switch (message->what) {
 		default:
-            BGroupView::MessageReceived(message);
+			BGroupView::MessageReceived(message);
 			break;
 	}
 }

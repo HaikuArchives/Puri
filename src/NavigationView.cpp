@@ -17,10 +17,10 @@
 #include "Tools.h"
 
 NavigationView::NavigationView(void)
-	:
-    BGroupView("navigation_view", B_VERTICAL, 0),
-    fAutohiding(false)
+	: BGroupView("navigation_view", B_VERTICAL, 0),
+	  fAutohiding(false)
 {
+	// clang-format off
 	BLayoutBuilder::Group<>(this)
 		.AddStrut(0)
 		.AddGroup(B_HORIZONTAL, 0).GetLayout( &fMainGroup )
@@ -35,16 +35,16 @@ NavigationView::NavigationView(void)
 		.End()
 		.AddStrut(0)
 	;
+	// clang-format on
 }
 
 
 void
-NavigationView::MouseMoved(BPoint where, uint32 code,
-									                const BMessage* dragMessage)
+NavigationView::MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage)
 {
 	switch (code) {
 		case B_EXITED_VIEW:
-		//	fMainGroup->SetVisible(false);
+			//	fMainGroup->SetVisible(false);
 			break;
 
 		case B_ENTERED_VIEW:
@@ -58,7 +58,6 @@ NavigationView::MouseMoved(BPoint where, uint32 code,
 		default:
 			break;
 	}
-
 }
 
 
