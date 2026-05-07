@@ -1,0 +1,36 @@
+name: "haiku-ci"
+on: [push, pull_request]
+
+jobs:
+  build-haiku:
+    timeout-minutes: 60
+    runs-on: ${{ matrix.config.runner }}
+    name: build-${{ matrix.config.os }}-${{ matrix.config.version }}-${{ matrix.config.architecture }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # The OS versions supported are specific to the version of the action
+          # https://github.com/cross-platform-actions/action/blob/master/changelog.md
+          - { os: haiku, version: 'r1beta5', runner: 'ubuntu-latest', architecture: 'x86-64' }
+          - { os: haiku, version: 'r1beta5',  runner: 'ubuntu-latest', architecture: 'x86' }
+          - { os: haiku, version: 'nightly', runner: 'ubuntu-latest', architecture: 'x86-64' }
+          - { os: haiku, version: 'nightly',  runner: 'ubuntu-latest', architecture: 'x86' }
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: korli/action@v0.25.0-haiku4
+        with:
+          operating_system: ${{ matrix.config.os }}
+          version: ${{ matrix.config.version }}
+          architecture: ${{ matrix.config.architecture }}
+          run: |
+            if [[ `uname -m` == BePC ]]; then
+              ssh user@localhost "pkgman update -y devel:lib3ds_x86 devel:libgl_x86 devel:libglu_x86 devel:libpng16_x86 makefile_engine cmd:gcc_x86 gcc_x86_syslibs_devel cmd:make cmd:as_x86" &&
+              cd src && setarch x86 make
+            else
+              ssh user@localhost "pkgman update -y devel:lib3ds devel:libgl devel:libglu devel:libpng16 makefile_engine cmd:gcc gcc_syslibs_devel cmd:make cmd:as" &&
+              cd src && make
+            fi
