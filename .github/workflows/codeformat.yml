@@ -14,7 +14,7 @@ jobs:
     clang-format:
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               with:
                   ref: ${{ github.head_ref }}
 
@@ -29,6 +29,6 @@ jobs:
                   which clang-format-21
                   clang-format-21 -i src/*.cpp src/*.h
 
-            - uses: stefanzweifel/git-auto-commit-action@v5
+            - uses: stefanzweifel/git-auto-commit-action@v7
               with:
                   commit_message: Apply clang-format changes
